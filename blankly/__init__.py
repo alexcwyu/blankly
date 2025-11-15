@@ -18,8 +18,16 @@
 import blankly.utils.utils
 import blankly.data as data
 from blankly.exchanges.interfaces.coinbase_pro.coinbase_pro import CoinbasePro
-from blankly.exchanges.interfaces.binance.binance import Binance
-from blankly.exchanges.interfaces.alpaca.alpaca import Alpaca
+try:
+    from blankly.exchanges.interfaces.binance.binance import Binance
+    from blankly.exchanges.interfaces.binance_futures.binance_futures import BinanceFutures
+except ImportError:
+    Binance = None
+    BinanceFutures = None
+try:
+    from blankly.exchanges.interfaces.alpaca.alpaca import Alpaca
+except ImportError:
+    Alpaca = None
 from blankly.exchanges.interfaces.oanda.oanda import Oanda
 from blankly.exchanges.interfaces.kucoin.kucoin import Kucoin
 from blankly.exchanges.interfaces.ftx.ftx import FTX
@@ -44,7 +52,6 @@ import blankly.indicators as indicators
 from blankly.utils import time_builder
 
 from blankly.enums import Side, OrderType, OrderStatus, TimeInForce
-from blankly.exchanges.interfaces.binance_futures.binance_futures import BinanceFutures
 from blankly.exchanges.interfaces.ftx_futures.ftx_futures import FTXFutures
 from blankly.frameworks.strategy import FuturesStrategy
 from blankly.frameworks.strategy import FuturesStrategyState

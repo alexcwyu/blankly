@@ -19,7 +19,15 @@ import random
 import requests
 
 import blankly.utils.utils
-from blankly.exchanges.interfaces.alpaca.alpaca_websocket import Tickers as Alpaca_Ticker
+
+# Make alpaca import optional to avoid dependency conflicts
+try:
+    from blankly.exchanges.interfaces.alpaca.alpaca_websocket import Tickers as Alpaca_Ticker
+    ALPACA_AVAILABLE = True
+except ImportError:
+    Alpaca_Ticker = None
+    ALPACA_AVAILABLE = False
+
 from blankly.exchanges.interfaces.binance.binance_websocket import Tickers as Binance_Ticker
 from blankly.exchanges.interfaces.coinbase_pro.coinbase_pro_websocket import Tickers as Coinbase_Pro_Ticker
 from blankly.exchanges.interfaces.kucoin.kucoin_websocket import Tickers as Kucoin_Ticker
@@ -165,6 +173,11 @@ class TickerManager(WebsocketManager):
                 override_symbol = self.__default_symbol
 
             override_symbol = blankly.utils.to_exchange_symbol(override_symbol, "alpaca")
+            if not ALPACA_AVAILABLE:
+                raise ImportError(
+                    "Alpaca support requires alpaca-trade-api. "
+                    "Install it with: pip install blankly[alpaca]"
+                )
             if sandbox_mode:
                 ticker = Alpaca_Ticker(override_symbol,
                                        "trades",

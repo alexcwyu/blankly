@@ -17,17 +17,33 @@
 """
 
 import pandas as pd
-import tulipy as ti
+
+try:
+    import tulipy as ti
+    TULIPY_AVAILABLE = True
+except ImportError:
+    TULIPY_AVAILABLE = False
+    ti = None
 
 from blankly.indicators.utils import check_series, convert_to_numpy
 
 
+def _check_tulipy():
+    if not TULIPY_AVAILABLE:
+        raise ImportError(
+            "tulipy is not installed. Install it with: pip install 'blankly[indicators]' "
+            "Note: tulipy is not compatible with Python 3.13+"
+        )
+
+
 def bbands(data, period=14, stddev=2):
+    _check_tulipy()
     data = convert_to_numpy(data)
     return ti.bbands(data, period, stddev)
 
 
 def wad(high_data, low_data, close_data, use_series=False):
+    _check_tulipy()
     if check_series(high_data) or check_series(low_data) or check_series(close_data):
         use_series = True
     high_data = convert_to_numpy(high_data)

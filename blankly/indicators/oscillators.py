@@ -20,13 +20,28 @@ from typing import Any
 
 import numpy as np
 import pandas as pd
-import tulipy as ti
+
+try:
+    import tulipy as ti
+    TULIPY_AVAILABLE = True
+except ImportError:
+    TULIPY_AVAILABLE = False
+    ti = None
 
 from blankly.indicators.utils import check_series, convert_to_numpy
 
 
+def _check_tulipy():
+    if not TULIPY_AVAILABLE:
+        raise ImportError(
+            "tulipy is not installed. Install it with: pip install 'blankly[indicators]' "
+            "Note: tulipy is not compatible with Python 3.13+"
+        )
+
+
 def rsi(data: Any, period: int = 14, round_rsi: bool = False, use_series=False) -> np.array:
     """ Implements RSI Indicator """
+    _check_tulipy()
     if period >= len(data):
         return pd.Series() if use_series else []
     if check_series(data):

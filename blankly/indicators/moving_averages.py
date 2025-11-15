@@ -19,12 +19,27 @@
 from typing import Any
 
 import pandas as pd
-import tulipy as ti
+
+try:
+    import tulipy as ti
+    TULIPY_AVAILABLE = True
+except ImportError:
+    TULIPY_AVAILABLE = False
+    ti = None
 
 from blankly.indicators.utils import check_series, convert_to_numpy
 
 
+def _check_tulipy():
+    if not TULIPY_AVAILABLE:
+        raise ImportError(
+            "tulipy is not installed. Install it with: pip install 'blankly[indicators]' "
+            "Note: tulipy is not compatible with Python 3.13+"
+        )
+
+
 def ema(data: Any, period: int = 50, use_series=False) -> Any:
+    _check_tulipy()
     if check_series(data):
         use_series = True
     data = convert_to_numpy(data)

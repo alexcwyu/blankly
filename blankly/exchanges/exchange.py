@@ -25,7 +25,15 @@ from blankly.exchanges.interfaces.abc_exchange_interface import ABCExchangeInter
 from blankly.exchanges.interfaces.coinbase_pro.coinbase_pro_interface import CoinbaseProInterface
 from blankly.exchanges.interfaces.oanda.oanda_interface import OandaInterface
 from blankly.exchanges.interfaces.ftx.ftx_interface import FTXInterface
-from blankly.exchanges.interfaces.alpaca.alpaca_interface import AlpacaInterface
+
+# Make alpaca import optional to avoid dependency conflicts
+try:
+    from blankly.exchanges.interfaces.alpaca.alpaca_interface import AlpacaInterface
+    ALPACA_AVAILABLE = True
+except ImportError:
+    AlpacaInterface = None
+    ALPACA_AVAILABLE = False
+
 from blankly.exchanges.interfaces.binance.binance_interface import BinanceInterface
 from blankly.exchanges.interfaces.kucoin.kucoin_interface import KucoinInterface
 from blankly.exchanges.interfaces.okx.okx_interface import OkxInterface
@@ -73,6 +81,11 @@ class Exchange(ABCExchange, abc.ABC):
         elif self.__type == "binance":
             self.interface = BinanceInterface(self.__type, calls)
         elif self.__type == "alpaca":
+            if not ALPACA_AVAILABLE:
+                raise ImportError(
+                    "Alpaca support requires alpaca-trade-api. "
+                    "Install it with: pip install blankly[alpaca]"
+                )
             self.interface = AlpacaInterface(self.__type, calls)
         elif self.__type == "ftx":
             self.interface = FTXInterface(self.__type, calls)

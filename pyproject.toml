@@ -1,0 +1,71 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "blankly"
+version = "1.18.11b0"
+description = "Rapidly build, backtest & deploy trading bots"
+readme = "README.md"
+requires-python = "==3.13.*"
+license = {text = "LGPL-3.0"}
+authors = [
+    {name = "blankly", email = "contact@blankly.finance"},
+]
+keywords = ["Crypto", "Stocks", "Quantitative Finance", "Exchanges", "Bot"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Financial and Insurance Industry",
+    "License :: OSI Approved :: GNU Lesser General Public License v3 (LGPLv3)",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.13",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+    "questionary>=2.1.1",
+    "yaspin>=3.3.0",
+    "bokeh>=3.8.1",
+    "dateparser>=1.2.2",
+    "numpy>=2.3.4",
+    "pandas>=2.3.3",
+    "requests>=2.32.5",
+    "websocket-client>=1.9.0",
+    "msgpack>=1.0.3",
+]
+
+[project.optional-dependencies]
+alpaca = [
+    "alpaca-trade-api>=3.2.0",
+]
+binance = [
+    "python-binance>=1.0.32",
+]
+indicators = [
+    "newnewtulipy>=0.4.6.5; python_version < '3.13'",
+]
+all = [
+    "python-binance>=1.0.32",
+]
+
+[project.scripts]
+blankly_old = "blankly.deployment.cli:main"
+blankly = "blankly.deployment.new_cli:main"
+
+[project.urls]
+Homepage = "https://github.com/Blankly-Finance/Blankly"
+
+[tool.hatch.build.targets.wheel]
+packages = ["blankly"]
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "blankly/**",
+    "README.md",
+    "LICENSE",
+]
+exclude = [
+    "tests/**",
+    "examples/**",
+]
+
