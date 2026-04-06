@@ -56,11 +56,11 @@ blankly = "blankly.deployment.new_cli:main"
 Homepage = "https://github.com/Blankly-Finance/Blankly"
 
 [tool.hatch.build.targets.wheel]
-packages = ["blankly"]
+packages = ["src/blankly"]
 
 [tool.hatch.build.targets.sdist]
 include = [
-    "blankly/**",
+    "src/blankly/**",
     "README.md",
     "LICENSE",
 ]
@@ -68,4 +68,31 @@ exclude = [
     "tests/**",
     "examples/**",
 ]
+
+[tool.ruff]
+line-length = 88
+target-version = "py313"
+
+[tool.ruff.lint]
+select = ["E", "W", "F", "I", "UP", "B", "SIM", "C4", "RUF", "PERF", "TC", "PTH"]
+ignore = ["E501"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["S101"]
+"__init__.py" = ["F401"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["blankly"]
+
+[tool.pyright]
+pythonVersion = "3.13"
+typeCheckingMode = "basic"
+
+[tool.pytest.ini_options]
+minversion = "9.0"
+addopts = ["-ra", "-q", "--strict-markers", "--import-mode=importlib"]
+testpaths = ["tests"]
+pythonpath = ["src"]
+xfail_strict = true
+filterwarnings = ["error"]
 
