@@ -1,5 +1,8 @@
 # Blankly
 
+> **Last Updated**: 2026-04-06T16:25:30Z  \
+> **Git Hash**: `8b979ca`
+
 **Trading automation framework for building, backtesting, and deploying quantitative strategies across multiple exchanges.**
 
 | Field | Details |
