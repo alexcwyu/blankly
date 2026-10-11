@@ -20,6 +20,7 @@ import json
 import pandas as pd
 from enum import Enum
 
+from blankly.utils import convert_epochs
 from blankly.exchanges.interfaces.futures_exchange_interface import FuturesExchangeInterface
 
 
@@ -41,6 +42,7 @@ This class seeks to solve these problems:
 class FileTypes(Enum):
     csv = 'csv'
     json = 'json'
+    df = 'df'
 
 
 class DataReader:
@@ -83,18 +85,36 @@ class __FormatReader(DataReader):
         Primarily for CSV prices, this allows single or multi sets of symbols to be converted into matching arrays
         """
         # Turn it into a list
-        if isinstance(file_path, str):
+        if isinstance(file_path, str) or isinstance(file_path, pd.DataFrame):
             file_paths = [file_path]
         else:
             file_paths = file_path
 
-        if isinstance(symbol, str):
+        if isinstance(symbol, str) or isinstance(file_path, pd.DataFrame):
             symbols = [symbol]
         else:
             # Could be None still
             symbols = symbol
 
         return file_paths, symbols
+
+    def _parse_df_prices(self, file_paths: list, symbols: list, columns: set) -> None:
+
+        if symbols is None:
+            raise LookupError("Must pass one or more symbols to identify the DataFrame")
+        if len(file_paths) != len(symbols):
+            raise LookupError(f"Mismatching symbol & file path lengths, got {len(file_paths)} and {len(symbols)} for "
+                              f"file paths and symbol lengths.")
+
+        for index in range(len(file_paths)):
+
+            self._check_length(file_paths[index], file_paths[index])
+
+            # Check if its contained
+            assert (columns.issubset(file_paths[index].columns)), f"{columns} not subset of {file_paths[index].columns}"
+
+            # Now push it directly into the dataset and sort by time
+            self._internal_dataset[symbols[index]] = file_paths[index].sort_values('time')
 
     def _parse_csv_prices(self, file_paths: list, symbols: list, columns: set) -> None:
         if symbols is None:
@@ -110,7 +130,7 @@ class __FormatReader(DataReader):
             self._check_length(contents, file_paths[index])
 
             # Check if its contained
-            assert (columns.issubset(contents.columns))
+            assert (columns.issubset(contents.columns)), f"{columns} not subset of {contents.columns}"
 
             # Now push it directly into the dataset and sort by time
             self._internal_dataset[symbols[index]] = contents.sort_values('time')
@@ -142,7 +162,9 @@ class PriceReader(__FormatReader):
                 raise LookupError("Cannot pass both csv files and json files into a single constructor.")
 
         for file_path in file_paths:
-            if file_path[-3:] == 'csv':
+            if isinstance(file_path, pd.DataFrame):
+                complain_if_different('df', FileTypes.df.value)
+            elif file_path[-3:] == 'csv':
                 complain_if_different('csv', FileTypes.csv.value)
             elif file_path[-4:] == 'json':
                 # In this instance the symbols should be None
@@ -156,11 +178,22 @@ class PriceReader(__FormatReader):
         for symbol in self._internal_dataset:
             # Get the time diff
             time_series: pd.Series = self._internal_dataset[symbol]['time']
+
+            # Convert all epochs using the convert epoch function
+            time_series = time_series.apply(lambda x: convert_epochs(x))
+
             time_dif = time_series.diff()
 
             # Now find the most common difference and use that
             if symbol not in self.prices_info:
                 self.prices_info[symbol] = {}
+
+            guessed_resolution = int(time_dif.value_counts().idxmax())
+
+            # If the resolution is 0, then we have a problem
+            if guessed_resolution == 0:
+                raise LookupError(f"Resolution is 0 for {symbol}, this is not allowed. Please check your data."
+                                  f" This commonly occurs when the data is in exponential format or too few datapoints")
 
             # Store the resolution start time and end time of each dataset
             self.prices_info[symbol]['resolution'] = int(time_dif.value_counts().idxmax())
@@ -195,7 +228,9 @@ class PriceReader(__FormatReader):
 
         super().__init__(data_type)
 
-        if data_type == FileTypes.json.value:
+        if data_type == FileTypes.df.value:
+            self._parse_df_prices(file_paths, symbols, {'open', 'high', 'low', 'close', 'volume', 'time'})
+        elif data_type == FileTypes.json.value:
             self._parse_json_prices(file_paths, ('open', 'high', 'low', 'close', 'volume', 'time'))
         elif data_type == FileTypes.csv.value:
             self._parse_csv_prices(file_paths, symbols, {'open', 'high', 'low', 'close', 'volume', 'time'})

@@ -66,6 +66,7 @@ class PaperTradeInterface(ExchangeInterface, BacktestingWrapper):
         # self.evaluate_traded_account_assets()
 
         self.__enable_shorting = self.user_preferences['settings']['alpaca']['enable_shorting']
+        self.__calculate_margin = self.user_preferences['settings']['simulate_margin']
 
         # This logically overrides any __enable_shorting
         self.__force_shorting = self.user_preferences['settings']['global_shorting']
@@ -351,10 +352,10 @@ class PaperTradeInterface(ExchangeInterface, BacktestingWrapper):
                 return self.local_account.get_account(symbol)
             except KeyError:
                 if self.backtesting:
-                    raise KeyError("Symbol not found. This can be caused by an invalid quote currency "
+                    raise KeyError(f"Symbol {symbol} not found. This can be caused by an invalid quote currency "
                                    "in backtest.json.")
                 else:
-                    raise KeyError("Symbol not found.")
+                    raise KeyError(f"Symbol {symbol} not found.")
 
     def take_profit_order(self, symbol: str, price: float, size: float) -> TakeProfitOrder:
         # we don't simulate partial fills, this is the same as take_profit
@@ -414,7 +415,8 @@ class PaperTradeInterface(ExchangeInterface, BacktestingWrapper):
         # Test the purchase
         self.local_account.test_trade(symbol, side, qty, price, market_limits['market_order']["quote_increment"],
                                       quantity_decimals,
-                                      (shortable and self.__enable_shorting) or self.__force_shorting)
+                                      (shortable and self.__enable_shorting) or self.__force_shorting,
+                                      calculate_margin=self.__calculate_margin)
         # Create coinbase pro-like id
         coinbase_pro_id = paper_trade.generate_coinbase_pro_id()
         # TODO the force typing here isn't strictly necessary because its run int the isolate_specific anyway

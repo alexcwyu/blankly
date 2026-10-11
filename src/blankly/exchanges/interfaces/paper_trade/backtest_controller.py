@@ -526,7 +526,8 @@ class BackTestController(ABCBacktestController):  # circular import to type mode
                 end = (end_date - epoch).total_seconds()
 
         # If start/ends are specified unevenly
-        if (start_date is None and stop_date is not None) or (start_date is not None and stop_date is None):
+        if (start_date is None and stop_date is not None) or (start_date is not None and stop_date is None) or \
+                (start is None and end is None):
             raise ValueError("Both start and end dates must be set or use the 'to' argument.")
 
         self.__add_prices(symbol, start, end, resolution)
@@ -627,7 +628,7 @@ class BackTestController(ABCBacktestController):  # circular import to type mode
             quote_value = true_account[self.quote_currency]['available'] + true_account[self.quote_currency]['hold']
         except KeyError as e:
             raise KeyError(f"Failed looking up {e}. Try changing your quote_account_value_in in backtest.json to be "
-                           f"{e}.")
+                           f"{e}, or try a tether coin in backtest.json like USDT depending on exchange.")
         try:
             del true_account[self.quote_currency]
         except KeyError:
@@ -651,9 +652,20 @@ class BackTestController(ABCBacktestController):  # circular import to type mode
                 price = interface.get_price(currency_pair)
             except KeyError:
                 # Must be a currency we have no data for
-                price = 0
-            value_total += price * abs(true_available[i])
-            no_trade_value += price * abs(no_trade_available[i])
+                # This used to return zero but I believe all the cases where no data was avaiable have been elimated.
+                raise KeyError(f"Failed to quote {currency_pair} because no downloaded data for that pair is available. "
+                               f"Make sure to set \"quote_account_value_in\" in \"backtest.json\" to match the prices "
+                               f"you are using. For example if you are trading \"USD-JPY\", set your quote value "
+                               f"to \"JPY\". Currently it is set to {self.quote_currency}")
+
+            # This is needed for futures apparently
+            if is_future:
+                value_total += price * abs(true_available[i])
+                no_trade_value += price * abs(no_trade_available[i])
+            else:
+                # For stocks make sure not to use an absolute value
+                value_total += price * true_available[i]
+                no_trade_value += price * no_trade_available[i]
 
         # Make sure to add the time key in
         true_available['time'] = local_time
@@ -1111,7 +1123,7 @@ class BackTestController(ABCBacktestController):  # circular import to type mode
 
                 for column in cycle_status:
                     if column != 'time' and self.__account_was_used(column):
-                        p = figure(plot_width=900, plot_height=200, x_axis_type='datetime')
+                        p = figure(frame_width=900, frame_height=200, x_axis_type='datetime')
                         add_trace(self, p, time_, cycle_status[column], column)
 
                         # Add the no-trade line to the backtest
@@ -1157,49 +1169,52 @@ class BackTestController(ABCBacktestController):  # circular import to type mode
                         figures.append(p)
 
                 show(bokeh_columns(figures))
-                info_print(f'Make an account to take advantage of the platform backtest viewer: '
-                           f'https://app.blankly.finance/RETIe0J8EPSQz7wizoJX0OAFb8y1/62iIMVRKV7zkcpJysYlP/'
-                           f'75a0c190-4d8a-44e2-9310-c47d4d72b070/backtest')
+                # info_print(f'Make an account to take advantage of the platform backtest viewer: '
+                #            f'https://app.blankly.finance/RETIe0J8EPSQz7wizoJX0OAFb8y1/62iIMVRKV7zkcpJysYlP/'
+                #            f'75a0c190-4d8a-44e2-9310-c47d4d72b070/backtest')
 
             # This is where we end the backtesting time
             stop_clock = time.time()
 
-            try:
-                json_file = json.loads(open('./blankly.json').read())
-                api_key = json_file['api_key']
-                api_pass = json_file['api_pass']
-                # Need this to generate the URL
-                # Need this to know where to post to
-                model_id = json_file['model_id']
-
-                requests.post(f'https://events.blankly.finance/v1/backtest/result', json=platform_result, headers={
-                    'api_key': api_key,
-                    'api_pass': api_pass,
-                    'model_id': model_id
-                })
-
-                requests.post(f'https://events.blankly.finance/v1/backtest/status', json={
-                    'successful': True,
-                    'status_summary': 'Completed',
-                    'status_details': '',
-                    'time_elapsed': stop_clock - start_clock,
-                    'backtest_id': platform_result['backtest_id']
-                }, headers={
-                    'api_key': api_key,
-                    'api_pass': api_pass,
-                    'model_id': model_id
-                })
-
-                import webbrowser
-
-                link = f'https://app.blankly.finance/{api_key}/{model_id}/{platform_result["backtest_id"]}' \
-                       f'/backtest'
-                webbrowser.open(
-                    link
-                )
-                info_print(f'View your backtest here: {link}')
-            except (FileNotFoundError, KeyError):
-                internal_backtest_viewer()
+            internal_backtest_viewer()
+            # TODO this code does a good job uploading finished backtests to the platform. This should be fixed to
+            #  allow configuration in the settings to reference any self hosted version of the platform
+            # try:
+            #     json_file = json.loads(open('./blankly.json').read())
+            #     api_key = json_file['api_key']
+            #     api_pass = json_file['api_pass']
+            #     # Need this to generate the URL
+            #     # Need this to know where to post to
+            #     model_id = json_file['model_id']
+            #
+            #     requests.post(f'https://events.blankly.finance/v1/backtest/result', json=platform_result, headers={
+            #         'api_key': api_key,
+            #         'api_pass': api_pass,
+            #         'model_id': model_id
+            #     })
+            #
+            #     requests.post(f'https://events.blankly.finance/v1/backtest/status', json={
+            #         'successful': True,
+            #         'status_summary': 'Completed',
+            #         'status_details': '',
+            #         'time_elapsed': stop_clock - start_clock,
+            #         'backtest_id': platform_result['backtest_id']
+            #     }, headers={
+            #         'api_key': api_key,
+            #         'api_pass': api_pass,
+            #         'model_id': model_id
+            #     })
+            #
+            #     import webbrowser
+            #
+            #     link = f'https://app.blankly.finance/{api_key}/{model_id}/{platform_result["backtest_id"]}' \
+            #            f'/backtest'
+            #     webbrowser.open(
+            #         link
+            #     )
+            #     info_print(f'View your backtest here: {link}')
+            # except (FileNotFoundError, KeyError):
+            #     internal_backtest_viewer()
 
         # Finally, write the figures in
         result_object.figures = figures
