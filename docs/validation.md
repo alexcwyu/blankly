@@ -18,7 +18,7 @@ Run date: 2026-10-12. Branch: `feature/ayu_develop`. Interpreter: `3.15.0 (main,
 
 Current unresolved checks:
 
-- tests: exit 2; see [docs/maintenance-2026-10-12/blankly-tests-python315-source-supported.log](../../docs/maintenance-2026-10-12/blankly-tests-python315-source-supported.log)
+- tests: exit 2; see [check record](maintenance/index.html)
 
 ## Latest full-suite output
 
@@ -100,26 +100,26 @@ Unsuccessful rows are retained as historical compatibility attempts; they are no
 
 | Command | Exit | Seconds | Evidence |
 |---|---:|---:|---|
-| `uv lock --upgrade --python 3.15` | 0 | 0.56 | [log](../../docs/maintenance-2026-10-12/blankly-lock-3.15.log) |
-| `uv sync --all-extras --all-groups --python 3.15 --no-build --no-install-project` | 2 | 0.61 | [log](../../docs/maintenance-2026-10-12/blankly-wheel-probe-3.15.log) |
-| `uv lock --upgrade --python 3.14` | 0 | 0.29 | [log](../../docs/maintenance-2026-10-12/blankly-lock-3.14.log) |
-| `uv sync --all-extras --all-groups --python 3.14 --no-build --no-install-project` | 2 | 0.05 | [log](../../docs/maintenance-2026-10-12/blankly-wheel-probe-3.14.log) |
-| `uv sync --all-extras --all-groups --python 3.14` | 0 | 0.62 | [log](../../docs/maintenance-2026-10-12/blankly-sync-3.14.log) |
-| `uv build --python 3.14` | 0 | 1.03 | [log](../../docs/maintenance-2026-10-12/blankly-build.log) |
-| `/Users/alex/.local/share/uv/python/cpython-3.14-macos-aarch64-none/bin/python3.14 -m compileall -q src` | 0 | 0.13 | [log](../../docs/maintenance-2026-10-12/blankly-compile.log) |
-| `uv run --no-sync python -m pytest` | 2 | 4.68 | [log](../../docs/maintenance-2026-10-12/blankly-tests.log) |
-| `uv run --no-sync python -m compileall -q src` | 0 | 0.13 | [log](../../docs/maintenance-2026-10-12/blankly-compile-final.log) |
-| `uv build --python 3.14` | 0 | 0.94 | [log](../../docs/maintenance-2026-10-12/blankly-build-final.log) |
-| `uv run --no-sync python -c import sys,importlib.metadata,json; print(sys.version); print(json.dumps({d.metadata["Name"]: d.version for d in importlib.metadata.distributions()},indent=2,sort_keys=True))` | 0 | 0.13 | [log](../../docs/maintenance-2026-10-12/blankly-versions-final.log) |
-| `uv sync --directory /tmp/trading-python315-probes/blankly --all-extras --all-groups --python 3.15` | 0 | 3.88 | [log](../../docs/maintenance-2026-10-12/blankly-python315-source-probe.log) |
-| `uv lock --upgrade --python 3.15` | 0 | 0.61 | [log](../../docs/maintenance-2026-10-12/blankly-lock-python315-source-supported.log) |
-| `uv sync --all-extras --all-groups --python 3.15` | 0 | 1.83 | [log](../../docs/maintenance-2026-10-12/blankly-sync-python315-source-supported.log) |
-| `uv run --no-sync python -m pytest` | 2 | 10.3 | [log](../../docs/maintenance-2026-10-12/blankly-tests-python315-source-supported.log) |
-| `uv run --no-sync python -m compileall -q src` | 0 | 0.14 | [log](../../docs/maintenance-2026-10-12/blankly-compile-selected-python.log) |
-| `uv build --python 3.15` | 0 | 2.44 | [log](../../docs/maintenance-2026-10-12/blankly-build-selected-python.log) |
-| `uv run --no-sync python -c import sys,importlib.metadata,json; print(sys.version); print(json.dumps({d.metadata["Name"]:d.version for d in importlib.metadata.distributions()},indent=2,sort_keys=True))` | 0 | 0.13 | [log](../../docs/maintenance-2026-10-12/blankly-versions-final.log) |
+| `uv lock --upgrade --python 3.15` | 0 | 0.56 | [check record](maintenance/index.html) |
+| `uv sync --all-extras --all-groups --python 3.15 --no-build --no-install-project` | 2 | 0.61 | [check record](maintenance/index.html) |
+| `uv lock --upgrade --python 3.14` | 0 | 0.29 | [check record](maintenance/index.html) |
+| `uv sync --all-extras --all-groups --python 3.14 --no-build --no-install-project` | 2 | 0.05 | [check record](maintenance/index.html) |
+| `uv sync --all-extras --all-groups --python 3.14` | 0 | 0.62 | [check record](maintenance/index.html) |
+| `uv build --python 3.14` | 0 | 1.03 | [check record](maintenance/index.html) |
+| `/Users/alex/.local/share/uv/python/cpython-3.14-macos-aarch64-none/bin/python3.14 -m compileall -q src` | 0 | 0.13 | [check record](maintenance/index.html) |
+| `uv run --no-sync python -m pytest` | 2 | 4.68 | [check record](maintenance/index.html) |
+| `uv run --no-sync python -m compileall -q src` | 0 | 0.13 | [check record](maintenance/index.html) |
+| `uv build --python 3.14` | 0 | 0.94 | [check record](maintenance/index.html) |
+| `uv run --no-sync python -c import sys,importlib.metadata,json; print(sys.version); print(json.dumps({d.metadata["Name"]: d.version for d in importlib.metadata.distributions()},indent=2,sort_keys=True))` | 0 | 0.13 | [check record](maintenance/index.html) |
+| `uv sync --directory /tmp/trading-python315-probes/blankly --all-extras --all-groups --python 3.15` | 0 | 3.88 | [check record](maintenance/index.html) |
+| `uv lock --upgrade --python 3.15` | 0 | 0.61 | [check record](maintenance/index.html) |
+| `uv sync --all-extras --all-groups --python 3.15` | 0 | 1.83 | [check record](maintenance/index.html) |
+| `uv run --no-sync python -m pytest` | 2 | 10.3 | [check record](maintenance/index.html) |
+| `uv run --no-sync python -m compileall -q src` | 0 | 0.14 | [check record](maintenance/index.html) |
+| `uv build --python 3.15` | 0 | 2.44 | [check record](maintenance/index.html) |
+| `uv run --no-sync python -c import sys,importlib.metadata,json; print(sys.version); print(json.dumps({d.metadata["Name"]:d.version for d in importlib.metadata.distributions()},indent=2,sort_keys=True))` | 0 | 0.13 | [check record](maintenance/index.html) |
 
-The versions-final log records the exact interpreter patch release and every installed dependency version. The machine-readable [result](../../docs/maintenance-2026-10-12/blankly-result.json) includes branch/default ancestry, status, artifacts and unresolved checks.
+The versions-final log records the exact interpreter patch release and every installed dependency version. The machine-readable [verification record](maintenance/verification.json) includes branch/default ancestry, status, artifacts and unresolved checks.
 
 ## Dependency floor refresh
 

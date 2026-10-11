@@ -1,0 +1,239 @@
+{
+  "repository": "blankly",
+  "source_commit_before_documentation_commit": "fa609a7c6d3375c2d5ba6a87c61f858b16f3e131",
+  "recorded_on": "2026-10-12",
+  "records": [
+    {
+      "command": "uv build --python 3.14",
+      "exit_code": 0,
+      "seconds": 1.03,
+      "check": "build",
+      "original_log": "blankly-build.log",
+      "log_sha256": "6f99c1faedb3ec25071dcdb7eac1109b84b18b5184b19259e210a33e5a4b1753",
+      "outcomes": [
+        "Successfully built dist/blankly-1.18.25b0.tar.gz",
+        "Successfully built dist/blankly-1.18.25b0-py3-none-any.whl"
+      ]
+    },
+    {
+      "command": "uv build --python 3.14",
+      "exit_code": 0,
+      "seconds": 0.94,
+      "check": "build-final",
+      "original_log": "blankly-build-final.log",
+      "log_sha256": "6f99c1faedb3ec25071dcdb7eac1109b84b18b5184b19259e210a33e5a4b1753",
+      "outcomes": [
+        "Successfully built dist/blankly-1.18.25b0.tar.gz",
+        "Successfully built dist/blankly-1.18.25b0-py3-none-any.whl"
+      ]
+    },
+    {
+      "command": "uv build --python 3.15",
+      "exit_code": 0,
+      "seconds": 2.44,
+      "check": "build-selected-python",
+      "original_log": "blankly-build-selected-python.log",
+      "log_sha256": "696ca4c36acf0b3627f1cf80eec0384bec63eae58014ba06c3013335bc59948c",
+      "outcomes": [
+        "Successfully built dist/blankly-1.18.25b0.tar.gz",
+        "Successfully built dist/blankly-1.18.25b0-py3-none-any.whl"
+      ]
+    },
+    {
+      "command": "/Users/alex/.local/share/uv/python/cpython-3.14-macos-aarch64-none/bin/python3.14 -m compileall -q src",
+      "exit_code": 0,
+      "seconds": 0.13,
+      "check": "compile",
+      "original_log": "blankly-compile.log",
+      "log_sha256": "cdad8d31f71f9ca30ecb973875a31a35e82562441812821f059e0f67f0cb87cf",
+      "outcomes": []
+    },
+    {
+      "command": "uv run --no-sync python -m compileall -q src",
+      "exit_code": 0,
+      "seconds": 0.13,
+      "check": "compile-final",
+      "original_log": "blankly-compile-final.log",
+      "log_sha256": "18836bd061fd2cbbcee4cfbe11a0c5bb8956a47a78decc98b17bdc695bd896a7",
+      "outcomes": []
+    },
+    {
+      "command": "uv run --no-sync python -m compileall -q src",
+      "exit_code": 0,
+      "seconds": 0.14,
+      "check": "compile-selected-python",
+      "original_log": "blankly-compile-selected-python.log",
+      "log_sha256": "18836bd061fd2cbbcee4cfbe11a0c5bb8956a47a78decc98b17bdc695bd896a7",
+      "outcomes": []
+    },
+    {
+      "command": "uv lock --upgrade --python 3.14",
+      "exit_code": 0,
+      "seconds": 0.29,
+      "check": "lock-3.14",
+      "original_log": "blankly-lock-3.14.log",
+      "log_sha256": "224be100313c258cc9aa3d1e6b8ef1a6834b8b3aafbc4c9432dd57c2d8649fbc",
+      "outcomes": []
+    },
+    {
+      "command": "uv lock --upgrade --python 3.15",
+      "exit_code": 0,
+      "seconds": 0.56,
+      "check": "lock-3.15",
+      "original_log": "blankly-lock-3.15.log",
+      "log_sha256": "7fd4c9add5add1c461ae9a919753eddce5f3240c51e18c3a0360d26f0fc6624f",
+      "outcomes": []
+    },
+    {
+      "command": "uv lock --upgrade --python 3.15",
+      "exit_code": 0,
+      "seconds": 0.61,
+      "check": "lock-python315-source-supported",
+      "original_log": "blankly-lock-python315-source-supported.log",
+      "log_sha256": "9899bae09b808f385aee78a8e8415ba473fb11adb27e795c83959d862fe4ebff",
+      "outcomes": []
+    },
+    {
+      "command": "uv sync --directory /tmp/trading-python315-probes/blankly --all-extras --all-groups --python 3.15",
+      "exit_code": 0,
+      "seconds": 3.88,
+      "check": "python315-source-probe",
+      "original_log": "blankly-python315-source-probe.log",
+      "log_sha256": "40f92ef94b0d862db86f2cff5022b520a71ce342385014e0d6157a3a63b7bcb8",
+      "outcomes": []
+    },
+    {
+      "command": "uv sync --all-extras --all-groups --python 3.14",
+      "exit_code": 0,
+      "seconds": 0.62,
+      "check": "sync-3.14",
+      "original_log": "blankly-sync-3.14.log",
+      "log_sha256": "8ad5addb6f6de0cf448a9b2b7e21d83b4637b10c9d511ff52f199530f9f11755",
+      "outcomes": []
+    },
+    {
+      "command": "uv sync --all-extras --all-groups --python 3.15",
+      "exit_code": 0,
+      "seconds": 1.83,
+      "check": "sync-python315-source-supported",
+      "original_log": "blankly-sync-python315-source-supported.log",
+      "log_sha256": "74c3e74e9359e15068937e4ee76c36b5a17687a70872bdb8c41ef961731290a7",
+      "outcomes": []
+    },
+    {
+      "command": "uv run --no-sync python -m pytest",
+      "exit_code": 2,
+      "seconds": 4.68,
+      "check": "tests",
+      "original_log": "blankly-tests.log",
+      "log_sha256": "83e81f7628b252752cf1e0f3e3cb680f5e65897c9782086e00bac9a60a582f4f",
+      "outcomes": []
+    },
+    {
+      "command": "uv run --no-sync python -m pytest",
+      "exit_code": 2,
+      "check": "tests-python315-source-supported",
+      "original_log": "blankly-tests-python315-source-supported.log",
+      "log_sha256": "930f834f2cbc01fb09adc3b3847f93534d316091bf3da890b03c65f09bf41e79",
+      "outcomes": []
+    },
+    {
+      "command": "uv run --no-sync python -c import sys,importlib.metadata,json; print(sys.version); print(json.dumps({d.metadata[\"Name\"]:d.version for d in importlib.metadata.distributions()},indent=2,sort_keys=True))",
+      "exit_code": 0,
+      "seconds": 0.13,
+      "check": "versions-final",
+      "original_log": "blankly-versions-final.log",
+      "log_sha256": "5650a2b0e426b607f9f0fead8fbd8b510f2989d1b61dccbb249325baf8ddb702",
+      "outcomes": []
+    },
+    {
+      "command": "uv sync --all-extras --all-groups --python 3.14 --no-build --no-install-project",
+      "exit_code": 2,
+      "seconds": 0.05,
+      "check": "wheel-probe-3.14",
+      "original_log": "blankly-wheel-probe-3.14.log",
+      "log_sha256": "3d9a3bf341ae9f3f3f67264dd0732935b949dea554a4ec7a69f8813f2bcf758e",
+      "outcomes": []
+    },
+    {
+      "command": "uv sync --all-extras --all-groups --python 3.15 --no-build --no-install-project",
+      "exit_code": 2,
+      "seconds": 0.61,
+      "check": "wheel-probe-3.15",
+      "original_log": "blankly-wheel-probe-3.15.log",
+      "log_sha256": "d294338fb34c9a10e7c24c78f031c8698663b5b725c17f093216f2e666869b6d",
+      "outcomes": []
+    }
+  ],
+  "summary": {
+    "repo": "blankly",
+    "branch": "feature/ayu_develop",
+    "blockers": [
+      {
+        "stage": "tests",
+        "command": "uv run --no-sync python -m pytest",
+        "log": "docs/maintenance-2026-10-12/blankly-tests-python315-source-supported.log",
+        "exit_code": 2
+      }
+    ],
+    "started": "2026-10-12T00:28:01+0800",
+    "dependency_updates": [
+      {
+        "from": "pytest-mock>=3.15.1",
+        "to": "pytest-mock>=3.16.0"
+      }
+    ],
+    "lock": "passed",
+    "python": "3.15",
+    "sync": "passed",
+    "build": "passed",
+    "compile": "passed",
+    "tests": "failed",
+    "test_summary": "$ uv run --no-sync python -m pytest\nINFO: Live futures trading is untested due to US regulations - this prevents blankly developers from integrating with these exchanges. We are looking for someone who is interested in helping us create & test our integrations.\nINFO: \"auto_truncate\" not specified in preferences, defaulting to: \"False\"\nINFO: \"global_shorting\" not specified in preferences, defaulting to: \"False\"\nINFO: \"simulate_margin\" not specified in preferences, defaulting to: \"True\"\nINFO: \"margin_type\" not specified in preferences, defaulting to: \"USDT-M\"\nINFO: \"enable_shorting\" not specified in preferences, defaulting to: \"True\"\nINFO: \"use_yfinance\" not specified in preferences, defaulting to: \"False\"\nINFO: \"okx\" not specified in preferences, defaulting to: \"{'cash': 'USDT'}\"\nINFO: \"keyless\" not specified in preferences, defaulting to: \"{'cash': 'USD'}\"\nINFO: \"cash\" not specified in preferences, defaulting to: \"USD\"\nINFO: \"paper\" not specified in preferences, defaulting to: \"{'price_source': 'api'}\"\n============================= test session starts ==============================\nplatform darwin -- Python 3.15.0, pytest-9.1.1, pluggy-1.6.0\nrootdir: <workspace>/blankly\nconfigfile: pytest.ini (WARNING: ignoring pytest config in pyproject.toml!)\ntestpaths: tests\nplugins: mock-3.16.0\ncollected 63 items / 1 error\n\n==================================== ERRORS ====================================\n__________________ ERROR collecting tests/new_interface_tests __________________\nsrc/blankly/exchanges/auth/utils.py:117: in load_json\n    f = open(keys_file)\n        ^^^^^^^^^^^^^^^\nE   FileNotFoundError: [Errno 2] No such file or directory: './tests/config/keys.json'\n\nDuring handling of the above exception, another exception occurred:\n../../../.local/share/uv/python/cpython-3.15.0-macos-aarch64-none/lib/python3.15/importlib/__init__.py:88: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n<frozen importlib._bootstrap>:1390: in _gcd_import\n    ???\n<frozen importlib._bootstrap>:1350: in _find_and_load\n    ???\n<frozen importlib._bootstrap>:1309: in _find_and_load_unlocked\n    ???\n<frozen importlib._bootstrap>:915: in _load_unlocked\n    ???\n.venv/lib/python3.15/site-packages/_pytest/assertion/rewrite.py:188: in exec_module\n    exec(co, module.__dict__)\ntests/new_interface_tests/conftest.py:8: in <module>\n    from tests.new_interface_tests.test_utils import FUTURES_EXCHANGES, get_symbols, SPOT_EXCHANGES\n<frozen importlib._bootstrap>:1350: in _find_and_load\n    ???\n<frozen importlib._bootstrap>:1309: in _find_and_load_unlocked\n    ???\n<frozen importlib._bootstrap>:915: in _load_unlocked\n    ???\n.venv/lib/python3.15/site-packages/_pytest/assertion/rewrite.py:188: in exec_module\n    exec(co, module.__dict__)\ntests/new_interface_tests/test_utils.py:37: in <module>\n    binance_futures = BinanceFutures(keys_path=\"./tests/config/keys.json\",\nsrc/blankly/exchanges/interfaces/binance_futures/binance_futures.py:35: in __init__\n    auth = AuthConstructor(keys_path, portfolio_name, 'binance',\nsrc/blankly/exchanges/auth/auth_constructor.py:40: in __init__\n    self.portfolio_name, self.keys = load_auth(exchange, keys_file, portfolio_name)\n                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nsrc/blankly/exchanges/auth/utils.py:57: in load_auth\n    auth_object = load_json(keys_file)\n                  ^^^^^^^^^^^^^^^^^^^^\nsrc/blankly/exchanges/auth/utils.py:122: in load_json\n    raise FileNotFoundError(\"Make sure a Keys.json file is placed in the same folder as the project working \"\nE   FileNotFoundError: Make sure a Keys.json file is placed in the same folder as the project working directory!\n=========================== short test summary info ============================\nERROR tests/new_interface_tests - FileNotFoundError: Make sure a Keys.json fi...\n!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!\n=============================== 1 error in 8.01s ===============================\n",
+    "finished": "2026-10-12T00:28:10+0800",
+    "head": "fa609a7c6d3375c2d5ba6a87c61f858b16f3e131",
+    "notes": [
+      "The full pytest suite is attempted without changing discovery. Live exchange test collection reads missing Keys.json and cannot proceed without the original credential setup.",
+      "The retained Alpaca SDK requires msgpack==1.0.3; that exact compatible pin is preserved instead of forcing a contradictory latest major.",
+      "Python 3.15 actual installation succeeds including source builds."
+    ],
+    "python_version": "3.15.0 (main, Oct  9 2026, 15:11:47) [Clang 22.1.3 ]",
+    "failed_attempts": [
+      {
+        "python": "3.15",
+        "stage": "native wheel probe",
+        "details": "$ uv sync --all-extras --all-groups --python 3.15 --no-build --no-install-project\nUsing CPython 3.15.0\nRemoved virtual environment at: .venv\nCreating virtual environment at: .venv\nResolved 50 packages in 6ms\nerror: Distribution `msgpack==1.0.3 @ registry+https://pypi.org/simple` can't be installed because it is marked as `--no-build` but has no binary distribution\n"
+      },
+      {
+        "stage": "tests",
+        "details": "$ uv run --no-sync python -m pytest\nINFO: Live futures trading is untested due to US regulations - this prevents blankly developers from integrating with these exchanges. We are looking for someone who is interested in helping us create & test our integrations.\nINFO: \"auto_truncate\" not specified in preferences, defaulting to: \"False\"\nINFO: \"global_shorting\" not specified in preferences, defaulting to: \"False\"\nINFO: \"simulate_margin\" not specified in preferences, defaulting to: \"True\"\nINFO: \"margin_type\" not specified in preferences, defaulting to: \"USDT-M\"\nINFO: \"enable_shorting\" not specified in preferences, defaulting to: \"True\"\nINFO: \"use_yfinance\" not specified in preferences, defaulting to: \"False\"\nINFO: \"okx\" not specified in preferences, defaulting to: \"{'cash': 'USDT'}\"\nINFO: \"keyless\" not specified in preferences, defaulting to: \"{'cash': 'USD'}\"\nINFO: \"cash\" not specified in preferences, defaulting to: \"USD\"\nINFO: \"paper\" not specified in preferences, defaulting to: \"{'price_source': 'api'}\"\n============================= test session starts ==============================\nplatform darwin -- Python 3.14.8, pytest-9.1.1, pluggy-1.6.0\nrootdir: <workspace>/blankly\nconfigfile: pytest.ini (WARNING: ignoring pytest config in pyproject.toml!)\ntestpaths: tests\nplugins: mock-3.16.0\ncollected 63 items / 1 error\n\n==================================== ERRORS ====================================\n__________________ ERROR collecting tests/new_interface_tests __________________\nsrc/blankly/exchanges/auth/utils.py:117: in load_json\n    f = open(keys_file)\n        ^^^^^^^^^^^^^^^\nE   FileNotFoundError: [Errno 2] No such file or directory: './tests/config/keys.json'\n\nDuring handling of the above exception, another exception occurred:\n../../../.local/share/uv/python/cpython-3.14.8-macos-aarch64-none/lib/python3.14/importlib/__init__.py:88: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n<frozen importlib._bootstrap>:1406: in _gcd_import\n    ???\n<frozen importlib._bootstrap>:1371: in _find_and_load\n    ???\n<frozen importlib._bootstrap>:1342: in _find_and_load_unlocked\n    ???\n<frozen importlib._bootstrap>:938: in _load_unlocked\n    ???\n.venv/lib/python3.14/site-packages/_pytest/assertion/rewrite.py:188: in exec_module\n    exec(co, module.__dict__)\ntests/new_interface_tests/conftest.py:8: in <module>\n    from tests.new_interface_tests.test_utils import FUTURES_EXCHANGES, get_symbols, SPOT_EXCHANGES\n<frozen importlib._bootstrap>:1371: in _find_and_load\n    ???\n<frozen importlib._bootstrap>:1342: in _find_and_load_unlocked\n    ???\n<frozen importlib._bootstrap>:938: in _load_unlocked\n    ???\n.venv/lib/python3.14/site-packages/_pytest/assertion/rewrite.py:188: in exec_module\n    exec(co, module.__dict__)\ntests/new_interface_tests/test_utils.py:37: in <module>\n    binance_futures = BinanceFutures(keys_path=\"./tests/config/keys.json\",\nsrc/blankly/exchanges/interfaces/binance_futures/binance_futures.py:35: in __init__\n    auth = AuthConstructor(keys_path, portfolio_name, 'binance',\nsrc/blankly/exchanges/auth/auth_constructor.py:40: in __init__\n    self.portfolio_name, self.keys = load_auth(exchange, keys_file, portfolio_name)\n                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nsrc/blankly/exchanges/auth/utils.py:57: in load_auth\n    auth_object = load_json(keys_file)\n                  ^^^^^^^^^^^^^^^^^^^^\nsrc/blankly/exchanges/auth/utils.py:122: in load_json\n    raise FileNotFoundError(\"Make sure a Keys.json file is placed in the same folder as the project working \"\nE   FileNotFoundError: Make sure a Keys.json file is placed in the same folder as the project working directory!\n=========================== short test summary info ============================\nERROR tests/new_interface_tests - FileNotFoundError: Make sure a Keys.json fi...\n!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!\n=============================== 1 error in 3.62s ===============================\n"
+      },
+      {
+        "stage": "tests",
+        "details": "$ uv run --no-sync python -m pytest\nINFO: Live futures trading is untested due to US regulations - this prevents blankly developers from integrating with these exchanges. We are looking for someone who is interested in helping us create & test our integrations.\nINFO: \"auto_truncate\" not specified in preferences, defaulting to: \"False\"\nINFO: \"global_shorting\" not specified in preferences, defaulting to: \"False\"\nINFO: \"simulate_margin\" not specified in preferences, defaulting to: \"True\"\nINFO: \"margin_type\" not specified in preferences, defaulting to: \"USDT-M\"\nINFO: \"enable_shorting\" not specified in preferences, defaulting to: \"True\"\nINFO: \"use_yfinance\" not specified in preferences, defaulting to: \"False\"\nINFO: \"okx\" not specified in preferences, defaulting to: \"{'cash': 'USDT'}\"\nINFO: \"keyless\" not specified in preferences, defaulting to: \"{'cash': 'USD'}\"\nINFO: \"cash\" not specified in preferences, defaulting to: \"USD\"\nINFO: \"paper\" not specified in preferences, defaulting to: \"{'price_source': 'api'}\"\n============================= test session starts ==============================\nplatform darwin -- Python 3.15.0, pytest-9.1.1, pluggy-1.6.0\nrootdir: <workspace>/blankly\nconfigfile: pytest.ini (WARNING: ignoring pytest config in pyproject.toml!)\ntestpaths: tests\nplugins: mock-3.16.0\ncollected 63 items / 1 error\n\n==================================== ERRORS ====================================\n__________________ ERROR collecting tests/new_interface_tests __________________\nsrc/blankly/exchanges/auth/utils.py:117: in load_json\n    f = open(keys_file)\n        ^^^^^^^^^^^^^^^\nE   FileNotFoundError: [Errno 2] No such file or directory: './tests/config/keys.json'\n\nDuring handling of the above exception, another exception occurred:\n../../../.local/share/uv/python/cpython-3.15.0-macos-aarch64-none/lib/python3.15/importlib/__init__.py:88: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n<frozen importlib._bootstrap>:1390: in _gcd_import\n    ???\n<frozen importlib._bootstrap>:1350: in _find_and_load\n    ???\n<frozen importlib._bootstrap>:1309: in _find_and_load_unlocked\n    ???\n<frozen importlib._bootstrap>:915: in _load_unlocked\n    ???\n.venv/lib/python3.15/site-packages/_pytest/assertion/rewrite.py:188: in exec_module\n    exec(co, module.__dict__)\ntests/new_interface_tests/conftest.py:8: in <module>\n    from tests.new_interface_tests.test_utils import FUTURES_EXCHANGES, get_symbols, SPOT_EXCHANGES\n<frozen importlib._bootstrap>:1350: in _find_and_load\n    ???\n<frozen importlib._bootstrap>:1309: in _find_and_load_unlocked\n    ???\n<frozen importlib._bootstrap>:915: in _load_unlocked\n    ???\n.venv/lib/python3.15/site-packages/_pytest/assertion/rewrite.py:188: in exec_module\n    exec(co, module.__dict__)\ntests/new_interface_tests/test_utils.py:37: in <module>\n    binance_futures = BinanceFutures(keys_path=\"./tests/config/keys.json\",\nsrc/blankly/exchanges/interfaces/binance_futures/binance_futures.py:35: in __init__\n    auth = AuthConstructor(keys_path, portfolio_name, 'binance',\nsrc/blankly/exchanges/auth/auth_constructor.py:40: in __init__\n    self.portfolio_name, self.keys = load_auth(exchange, keys_file, portfolio_name)\n                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nsrc/blankly/exchanges/auth/utils.py:57: in load_auth\n    auth_object = load_json(keys_file)\n                  ^^^^^^^^^^^^^^^^^^^^\nsrc/blankly/exchanges/auth/utils.py:122: in load_json\n    raise FileNotFoundError(\"Make sure a Keys.json file is placed in the same folder as the project working \"\nE   FileNotFoundError: Make sure a Keys.json file is placed in the same folder as the project working directory!\n=========================== short test summary info ============================\nERROR tests/new_interface_tests - FileNotFoundError: Make sure a Keys.json fi...\n!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!\n=============================== 1 error in 8.01s ===============================\n",
+        "label": "tests-python315-source-supported"
+      }
+    ],
+    "unresolved_blockers": [
+      {
+        "stage": "tests",
+        "command": "uv run --no-sync python -m pytest",
+        "log": "docs/maintenance-2026-10-12/blankly-tests-python315-source-supported.log",
+        "exit_code": 2
+      }
+    ],
+    "default_ancestry": {
+      "refs/remotes/origin/development": true
+    },
+    "merge_in_progress": false,
+    "artifact_files": [
+      "dist/blankly-1.18.25b0.tar.gz",
+      "dist/.gitignore",
+      "dist/blankly-1.18.25b0-py3-none-any.whl"
+    ],
+    "committed": true,
+    "pushed": false,
+    "worktree_status": "?? .DS_Store\n"
+  },
+  "note": "Full raw logs are retained in the workspace maintenance evidence, not distributed here. Hashes identify those original logs. A successful build or selected test subset does not imply a full test-suite pass. Commands containing <workspace> describe the original execution environment."
+}
