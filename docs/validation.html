@@ -1,0 +1,270 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Validation evidence: blankly</title><style>
+:root{color-scheme:light dark;--bg:#f6f8fa;--paper:#fff;--fg:#182332;--muted:#526274;--line:#d9e0e7;--accent:#1769aa}
+@media(prefers-color-scheme:dark){:root{--bg:#111820;--paper:#192330;--fg:#e6edf3;--muted:#a0b3c5;--line:#344354;--accent:#71b7ee}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.7 system-ui,-apple-system,sans-serif}
+header{border-bottom:1px solid var(--line);padding:16px max(24px,calc((100vw - 1120px)/2));background:var(--paper);font-size:14px}
+main{max-width:1120px;margin:32px auto;padding:40px 48px;background:var(--paper);border:1px solid var(--line);border-radius:12px}
+h1,h2,h3,h4{line-height:1.3;scroll-margin-top:24px}h1{font-size:2.1rem}h2{margin-top:2.5em;border-bottom:1px solid var(--line);padding-bottom:.35em}h3{margin-top:1.8em}
+a{color:var(--accent);text-underline-offset:3px}code{font:14px/1.6 ui-monospace,SFMono-Regular,Menlo,monospace;background:var(--bg);border-radius:4px;padding:2px 5px}pre{overflow:auto;border:1px solid var(--line);background:var(--bg);padding:16px;border-radius:7px}pre code{padding:0;background:none}
+table{border-collapse:collapse;width:100%;display:block;overflow-x:auto;font-size:14px}th,td{border:1px solid var(--line);padding:9px 12px;text-align:left}th{background:var(--bg)}blockquote{border-left:4px solid var(--accent);margin:16px 0;padding:4px 20px;color:var(--muted)}
+.diagram{overflow-x:auto;margin:24px 0;padding:20px;border:1px solid var(--line);border-radius:8px;background:#fff;color:#182332}.mermaid{border:0;background:none;text-align:center}.mermaid svg{height:auto;max-width:100%}details{font-size:13px;color:#526274}.headerlink{margin-left:.4em;font-size:.7em;text-decoration:none;color:var(--muted)}
+@media(max-width:740px){main{margin:0;padding:24px 18px;border:0;border-radius:0}h1{font-size:1.7rem}.diagram{padding:8px}}
+@media print{header,details,.headerlink{display:none}body,main{background:#fff;color:#000;border:0;margin:0;padding:0}a{color:#000}.diagram,pre{break-inside:avoid}}
+</style></head><body><header>Engineering documentation · <a href="validation.md">Markdown source</a></header><main><h1 id="validation-evidence-blankly">Validation evidence: blankly<a class="headerlink" href="#validation-evidence-blankly" title="Permanent link">&para;</a></h1>
+<p>Run date: 2026-10-12. Branch: <code>feature/ayu_develop</code>. Interpreter: <code>3.15.0 (main, Oct  9 2026, 15:11:47) [Clang 22.1.3 ]</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Check</th>
+<th>Result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>lock</td>
+<td>passed</td>
+</tr>
+<tr>
+<td>sync</td>
+<td>passed</td>
+</tr>
+<tr>
+<td>compile</td>
+<td>passed</td>
+</tr>
+<tr>
+<td>build</td>
+<td>passed</td>
+</tr>
+<tr>
+<td>tests</td>
+<td>failed</td>
+</tr>
+</tbody>
+</table>
+<h2 id="current-result-and-compatibility-decisions">Current result and compatibility decisions<a class="headerlink" href="#current-result-and-compatibility-decisions" title="Permanent link">&para;</a></h2>
+<ul>
+<li>The full pytest suite is attempted without changing discovery. Live exchange test collection reads missing Keys.json and cannot proceed without the original credential setup.</li>
+<li>The retained Alpaca SDK requires msgpack==1.0.3; that exact compatible pin is preserved instead of forcing a contradictory latest major.</li>
+<li>Python 3.15 actual installation succeeds including source builds.</li>
+</ul>
+<p>Current unresolved checks:</p>
+<ul>
+<li>tests: exit 2; see <a href="../../docs/maintenance-2026-10-12/blankly-tests-python315-source-supported.log">docs/maintenance-2026-10-12/blankly-tests-python315-source-supported.log</a></li>
+</ul>
+<h2 id="latest-full-suite-output">Latest full-suite output<a class="headerlink" href="#latest-full-suite-output" title="Permanent link">&para;</a></h2>
+<pre><code class="language-text">$ uv run --no-sync python -m pytest
+INFO: Live futures trading is untested due to US regulations - this prevents blankly developers from integrating with these exchanges. We are looking for someone who is interested in helping us create &amp; test our integrations.
+INFO: &quot;auto_truncate&quot; not specified in preferences, defaulting to: &quot;False&quot;
+INFO: &quot;global_shorting&quot; not specified in preferences, defaulting to: &quot;False&quot;
+INFO: &quot;simulate_margin&quot; not specified in preferences, defaulting to: &quot;True&quot;
+INFO: &quot;margin_type&quot; not specified in preferences, defaulting to: &quot;USDT-M&quot;
+INFO: &quot;enable_shorting&quot; not specified in preferences, defaulting to: &quot;True&quot;
+INFO: &quot;use_yfinance&quot; not specified in preferences, defaulting to: &quot;False&quot;
+INFO: &quot;okx&quot; not specified in preferences, defaulting to: &quot;{'cash': 'USDT'}&quot;
+INFO: &quot;keyless&quot; not specified in preferences, defaulting to: &quot;{'cash': 'USD'}&quot;
+INFO: &quot;cash&quot; not specified in preferences, defaulting to: &quot;USD&quot;
+INFO: &quot;paper&quot; not specified in preferences, defaulting to: &quot;{'price_source': 'api'}&quot;
+============================= test session starts ==============================
+platform darwin -- Python 3.15.0, pytest-9.1.1, pluggy-1.6.0
+rootdir: /Users/alex/workspaces/trading/blankly
+configfile: pytest.ini (WARNING: ignoring pytest config in pyproject.toml!)
+testpaths: tests
+plugins: mock-3.16.0
+collected 63 items / 1 error
+
+==================================== ERRORS ====================================
+__________________ ERROR collecting tests/new_interface_tests __________________
+src/blankly/exchanges/auth/utils.py:117: in load_json
+    f = open(keys_file)
+        ^^^^^^^^^^^^^^^
+E   FileNotFoundError: [Errno 2] No such file or directory: './tests/config/keys.json'
+
+During handling of the above exception, another exception occurred:
+../../../.local/share/uv/python/cpython-3.15.0-macos-aarch64-none/lib/python3.15/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+&lt;frozen importlib._bootstrap&gt;:1390: in _gcd_import
+    ???
+&lt;frozen importlib._bootstrap&gt;:1350: in _find_and_load
+    ???
+&lt;frozen importlib._bootstrap&gt;:1309: in _find_and_load_unlocked
+    ???
+&lt;frozen importlib._bootstrap&gt;:915: in _load_unlocked
+    ???
+.venv/lib/python3.15/site-packages/_pytest/assertion/rewrite.py:188: in exec_module
+    exec(co, module.__dict__)
+tests/new_interface_tests/conftest.py:8: in &lt;module&gt;
+    from tests.new_interface_tests.test_utils import FUTURES_EXCHANGES, get_symbols, SPOT_EXCHANGES
+&lt;frozen importlib._bootstrap&gt;:1350: in _find_and_load
+    ???
+&lt;frozen importlib._bootstrap&gt;:1309: in _find_and_load_unlocked
+    ???
+&lt;frozen importlib._bootstrap&gt;:915: in _load_unlocked
+    ???
+.venv/lib/python3.15/site-packages/_pytest/assertion/rewrite.py:188: in exec_module
+    exec(co, module.__dict__)
+tests/new_interface_tests/test_utils.py:37: in &lt;module&gt;
+    binance_futures = BinanceFutures(keys_path=&quot;./tests/config/keys.json&quot;,
+src/blankly/exchanges/interfaces/binance_futures/binance_futures.py:35: in __init__
+    auth = AuthConstructor(keys_path, portfolio_name, 'binance',
+src/blankly/exchanges/auth/auth_constructor.py:40: in __init__
+    self.portfolio_name, self.keys = load_auth(exchange, keys_file, portfolio_name)
+                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/blankly/exchanges/auth/utils.py:57: in load_auth
+    auth_object = load_json(keys_file)
+                  ^^^^^^^^^^^^^^^^^^^^
+src/blankly/exchanges/auth/utils.py:122: in load_json
+    raise FileNotFoundError(&quot;Make sure a Keys.json file is placed in the same folder as the project working &quot;
+E   FileNotFoundError: Make sure a Keys.json file is placed in the same folder as the project working directory!
+=========================== short test summary info ============================
+ERROR tests/new_interface_tests - FileNotFoundError: Make sure a Keys.json fi...
+!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!
+=============================== 1 error in 8.01s ===============================
+
+</code></pre>
+<h2 id="exact-commands-and-exit-codes">Exact commands and exit codes<a class="headerlink" href="#exact-commands-and-exit-codes" title="Permanent link">&para;</a></h2>
+<p>Unsuccessful rows are retained as historical compatibility attempts; they are not claims that a current passing check remains blocked. Source-build probes use isolated temporary copies to preserve the selected repository environment.</p>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th style="text-align: right;">Exit</th>
+<th style="text-align: right;">Seconds</th>
+<th>Evidence</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>uv lock --upgrade --python 3.15</code></td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.56</td>
+<td><a href="../../docs/maintenance-2026-10-12/blankly-lock-3.15.log">log</a></td>
+</tr>
+<tr>
+<td><code>uv sync --all-extras --all-groups --python 3.15 --no-build --no-install-project</code></td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">0.61</td>
+<td><a href="../../docs/maintenance-2026-10-12/blankly-wheel-probe-3.15.log">log</a></td>
+</tr>
+<tr>
+<td><code>uv lock --upgrade --python 3.14</code></td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.29</td>
+<td><a href="../../docs/maintenance-2026-10-12/blankly-lock-3.14.log">log</a></td>
+</tr>
+<tr>
+<td><code>uv sync --all-extras --all-groups --python 3.14 --no-build --no-install-project</code></td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">0.05</td>
+<td><a href="../../docs/maintenance-2026-10-12/blankly-wheel-probe-3.14.log">log</a></td>
+</tr>
+<tr>
+<td><code>uv sync --all-extras --all-groups --python 3.14</code></td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.62</td>
+<td><a href="../../docs/maintenance-2026-10-12/blankly-sync-3.14.log">log</a></td>
+</tr>
+<tr>
+<td><code>uv build --python 3.14</code></td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.03</td>
+<td><a href="../../docs/maintenance-2026-10-12/blankly-build.log">log</a></td>
+</tr>
+<tr>
+<td><code>/Users/alex/.local/share/uv/python/cpython-3.14-macos-aarch64-none/bin/python3.14 -m compileall -q src</code></td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.13</td>
+<td><a href="../../docs/maintenance-2026-10-12/blankly-compile.log">log</a></td>
+</tr>
+<tr>
+<td><code>uv run --no-sync python -m pytest</code></td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">4.68</td>
+<td><a href="../../docs/maintenance-2026-10-12/blankly-tests.log">log</a></td>
+</tr>
+<tr>
+<td><code>uv run --no-sync python -m compileall -q src</code></td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.13</td>
+<td><a href="../../docs/maintenance-2026-10-12/blankly-compile-final.log">log</a></td>
+</tr>
+<tr>
+<td><code>uv build --python 3.14</code></td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.94</td>
+<td><a href="../../docs/maintenance-2026-10-12/blankly-build-final.log">log</a></td>
+</tr>
+<tr>
+<td><code>uv run --no-sync python -c import sys,importlib.metadata,json; print(sys.version); print(json.dumps({d.metadata["Name"]: d.version for d in importlib.metadata.distributions()},indent=2,sort_keys=True))</code></td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.13</td>
+<td><a href="../../docs/maintenance-2026-10-12/blankly-versions-final.log">log</a></td>
+</tr>
+<tr>
+<td><code>uv sync --directory /tmp/trading-python315-probes/blankly --all-extras --all-groups --python 3.15</code></td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">3.88</td>
+<td><a href="../../docs/maintenance-2026-10-12/blankly-python315-source-probe.log">log</a></td>
+</tr>
+<tr>
+<td><code>uv lock --upgrade --python 3.15</code></td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.61</td>
+<td><a href="../../docs/maintenance-2026-10-12/blankly-lock-python315-source-supported.log">log</a></td>
+</tr>
+<tr>
+<td><code>uv sync --all-extras --all-groups --python 3.15</code></td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.83</td>
+<td><a href="../../docs/maintenance-2026-10-12/blankly-sync-python315-source-supported.log">log</a></td>
+</tr>
+<tr>
+<td><code>uv run --no-sync python -m pytest</code></td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">10.3</td>
+<td><a href="../../docs/maintenance-2026-10-12/blankly-tests-python315-source-supported.log">log</a></td>
+</tr>
+<tr>
+<td><code>uv run --no-sync python -m compileall -q src</code></td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.14</td>
+<td><a href="../../docs/maintenance-2026-10-12/blankly-compile-selected-python.log">log</a></td>
+</tr>
+<tr>
+<td><code>uv build --python 3.15</code></td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">2.44</td>
+<td><a href="../../docs/maintenance-2026-10-12/blankly-build-selected-python.log">log</a></td>
+</tr>
+<tr>
+<td><code>uv run --no-sync python -c import sys,importlib.metadata,json; print(sys.version); print(json.dumps({d.metadata["Name"]:d.version for d in importlib.metadata.distributions()},indent=2,sort_keys=True))</code></td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.13</td>
+<td><a href="../../docs/maintenance-2026-10-12/blankly-versions-final.log">log</a></td>
+</tr>
+</tbody>
+</table>
+<p>The versions-final log records the exact interpreter patch release and every installed dependency version. The machine-readable <a href="../../docs/maintenance-2026-10-12/blankly-result.json">result</a> includes branch/default ancestry, status, artifacts and unresolved checks.</p>
+<h2 id="dependency-floor-refresh">Dependency floor refresh<a class="headerlink" href="#dependency-floor-refresh" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Before</th>
+<th>After</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>pytest-mock&gt;=3.15.1</code></td>
+<td><code>pytest-mock&gt;=3.16.0</code></td>
+</tr>
+</tbody>
+</table>
+<p>The table records the initial metadata refresh. Later compatibility constraints and vendor sources are explained above and the final authoritative requirements are in <a href="../pyproject.toml">pyproject.toml</a> and <a href="../uv.lock">uv.lock</a>. No test cases were added, removed or disabled. Existing deprecated-API cases retain their assertions while explicitly checking the documented warning.</p></main>
+<script type="module">
+import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@12.1.0/dist/mermaid.esm.min.mjs';
+mermaid.initialize({startOnLoad:true,securityLevel:'strict',theme:'default',flowchart:{useMaxWidth:true},sequence:{useMaxWidth:true}});
+</script></body></html>

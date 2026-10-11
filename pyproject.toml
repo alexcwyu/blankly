@@ -1,5 +1,5 @@
 [build-system]
-requires = ["hatchling"]
+requires = ["hatchling>=1.32.4"]
 build-backend = "hatchling.build"
 
 [project]
@@ -7,7 +7,7 @@ name = "blankly"
 version = "1.18.25b0"
 description = "Rapidly build, backtest & deploy trading bots"
 readme = "README.md"
-requires-python = "==3.13.*"
+requires-python = ">=3.13,<3.16"
 license = {text = "LGPL-3.0"}
 authors = [
     {name = "blankly", email = "contact@blankly.finance"},
@@ -24,14 +24,14 @@ classifiers = [
 ]
 dependencies = [
     "questionary>=2.1.1",
-    "yaspin>=3.3.0",
-    "bokeh>=3.8.1",
-    "dateparser>=1.2.2",
-    "numpy>=2.3.4",
-    "pandas>=2.3.3",
-    "requests>=2.32.5",
-    "websocket-client>=1.9.0",
-    "msgpack>=1.0.3",
+    "yaspin>=3.5.1",
+    "bokeh>=3.10.0",
+    "dateparser>=1.4.3",
+    "numpy>=2.5.4",
+    "pandas>=3.0.6",
+    "requests>=2.34.2",
+    "websocket-client>=1.9.2",
+    "msgpack==1.0.3",
 ]
 
 [project.optional-dependencies]
@@ -39,13 +39,13 @@ alpaca = [
     "alpaca-trade-api>=3.2.0",
 ]
 binance = [
-    "python-binance>=1.0.32",
+    "python-binance>=1.0.37",
 ]
 indicators = [
     "newnewtulipy>=0.4.6.5; python_version < '3.13'",
 ]
 all = [
-    "python-binance>=1.0.32",
+    "python-binance>=1.0.37",
 ]
 
 [project.scripts]
@@ -96,3 +96,9 @@ pythonpath = ["src"]
 xfail_strict = true
 filterwarnings = ["error"]
 
+
+[dependency-groups]
+dev = ["pytest>=9.1.1", "pytest-mock>=3.16.0"]
+
+[tool.uv]
+default-groups = ["dev"]

@@ -1,0 +1,520 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Current uv development workflow</title><style>
+:root{color-scheme:light dark;--bg:#f6f8fa;--paper:#fff;--fg:#182332;--muted:#526274;--line:#d9e0e7;--accent:#1769aa}
+@media(prefers-color-scheme:dark){:root{--bg:#111820;--paper:#192330;--fg:#e6edf3;--muted:#a0b3c5;--line:#344354;--accent:#71b7ee}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.7 system-ui,-apple-system,sans-serif}
+header{border-bottom:1px solid var(--line);padding:16px max(24px,calc((100vw - 1120px)/2));background:var(--paper);font-size:14px}
+main{max-width:1120px;margin:32px auto;padding:40px 48px;background:var(--paper);border:1px solid var(--line);border-radius:12px}
+h1,h2,h3,h4{line-height:1.3;scroll-margin-top:24px}h1{font-size:2.1rem}h2{margin-top:2.5em;border-bottom:1px solid var(--line);padding-bottom:.35em}h3{margin-top:1.8em}
+a{color:var(--accent);text-underline-offset:3px}code{font:14px/1.6 ui-monospace,SFMono-Regular,Menlo,monospace;background:var(--bg);border-radius:4px;padding:2px 5px}pre{overflow:auto;border:1px solid var(--line);background:var(--bg);padding:16px;border-radius:7px}pre code{padding:0;background:none}
+table{border-collapse:collapse;width:100%;display:block;overflow-x:auto;font-size:14px}th,td{border:1px solid var(--line);padding:9px 12px;text-align:left}th{background:var(--bg)}blockquote{border-left:4px solid var(--accent);margin:16px 0;padding:4px 20px;color:var(--muted)}
+.diagram{overflow-x:auto;margin:24px 0;padding:20px;border:1px solid var(--line);border-radius:8px;background:#fff;color:#182332}.mermaid{border:0;background:none;text-align:center}.mermaid svg{height:auto;max-width:100%}details{font-size:13px;color:#526274}.headerlink{margin-left:.4em;font-size:.7em;text-decoration:none;color:var(--muted)}
+@media(max-width:740px){main{margin:0;padding:24px 18px;border:0;border-radius:0}h1{font-size:1.7rem}.diagram{padding:8px}}
+@media print{header,details,.headerlink{display:none}body,main{background:#fff;color:#000;border:0;margin:0;padding:0}a{color:#000}.diagram,pre{break-inside:avoid}}
+</style></head><body><header>Engineering documentation · <a href="development.md">Markdown source</a></header><main><!-- ayu-maintenance-2026-10-12 -->
+<h1 id="current-uv-development-workflow">Current uv development workflow<a class="headerlink" href="#current-uv-development-workflow" title="Permanent link">&para;</a></h1>
+<p>The maintained branch is <code>feature/ayu_develop</code>. The selected interpreter is Python <code>3.15</code>; <code>requires-python</code> records the range that was actually resolved. Python 3.15 was attempted first. Dependency/native-wheel failures and fallback evidence are recorded in <a href="validation.md">validation.md</a>.</p>
+<pre><code class="language-sh">export UV_PYTHON_PREFERENCE=only-managed
+uv python install 3.15
+uv lock --check
+uv sync --frozen --all-extras --all-groups
+uv run --no-sync python -m compileall -q src
+uv build
+uv run --no-sync python -m pytest
+</code></pre>
+<p>Use <code>uv lock --upgrade</code> when intentionally refreshing dependencies, then review <code>pyproject.toml</code>, <code>uv.lock</code>, and the existing full test suite. The dependency floors were refreshed from current PyPI release metadata while preserving meaningful upstream upper bounds. Compatibility exceptions are documented with their resolver/test evidence rather than hidden by disabling tests.</p>
+<p>The <code>src/</code> layout and build-backend package discovery preserve public import names. Wheel/sdist resources include the source-associated data and templates. Optional vendor SDKs, live credentials, databases and graphical/native libraries retain their original runtime requirements. Examples and test fixtures are not promoted into the library API.</p>
+<!-- prior-development-notes -->
+
+<h2 id="compatibility-decisions">Compatibility decisions<a class="headerlink" href="#compatibility-decisions" title="Permanent link">&para;</a></h2>
+<ul>
+<li>The full pytest suite is attempted without changing discovery. Live exchange test collection reads missing Keys.json and cannot proceed without the original credential setup.</li>
+<li>The retained Alpaca SDK requires msgpack==1.0.3; that exact compatible pin is preserved instead of forcing a contradictory latest major.</li>
+<li>Python 3.15 actual installation succeeds including source builds.</li>
+</ul>
+<h1 id="blankly-development-guide">Blankly -- Development Guide<a class="headerlink" href="#blankly-development-guide" title="Permanent link">&para;</a></h1>
+<h2 id="setup">Setup<a class="headerlink" href="#setup" title="Permanent link">&para;</a></h2>
+<h3 id="from-pypi">From PyPI<a class="headerlink" href="#from-pypi" title="Permanent link">&para;</a></h3>
+<pre><code class="language-bash">pip install blankly
+blankly init
+</code></pre>
+<h3 id="from-source">From Source<a class="headerlink" href="#from-source" title="Permanent link">&para;</a></h3>
+<pre><code class="language-bash">git clone https://github.com/Blankly-Finance/Blankly.git
+cd blankly
+pip install -e .
+pip install pytest pytest-mock
+</code></pre>
+<h3 id="configuration-files">Configuration Files<a class="headerlink" href="#configuration-files" title="Permanent link">&para;</a></h3>
+<p>After <code>blankly init</code>, four configuration files are created:</p>
+<table>
+<thead>
+<tr>
+<th>File</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>keys.json</code></td>
+<td>Exchange API credentials</td>
+</tr>
+<tr>
+<td><code>settings.json</code></td>
+<td>Exchange-specific preferences (fees, websockets)</td>
+</tr>
+<tr>
+<td><code>backtest.json</code></td>
+<td>Backtesting parameters</td>
+</tr>
+<tr>
+<td><code>blankly.json</code></td>
+<td>Deployment settings</td>
+</tr>
+</tbody>
+</table>
+<h2 id="testing">Testing<a class="headerlink" href="#testing" title="Permanent link">&para;</a></h2>
+<pre><code class="language-bash"># Run all tests
+pytest
+
+# Run specific test file
+pytest tests/test_auth_constructor.py
+
+# Run specific test
+pytest tests/test_auth_constructor.py::TestAuthConstructor::test_method -v
+
+# Generate coverage
+pytest --cov=blankly tests/
+</code></pre>
+<h2 id="code-standards">Code Standards<a class="headerlink" href="#code-standards" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>Formatter</strong>: yapf (PEP 8 style)</li>
+<li><strong>Python versions</strong>: 3.7, 3.8, 3.9, 3.10</li>
+<li><strong>Test framework</strong>: pytest with unittest.TestCase classes</li>
+<li><strong>Naming</strong>: snake_case for functions/variables, PascalCase for classes</li>
+</ul>
+<h2 id="building-a-strategy">Building a Strategy<a class="headerlink" href="#building-a-strategy" title="Permanent link">&para;</a></h2>
+<h3 id="minimal-price-event-strategy">Minimal Price Event Strategy<a class="headerlink" href="#minimal-price-event-strategy" title="Permanent link">&para;</a></h3>
+<pre><code class="language-python">import blankly
+
+def init(symbol, state: blankly.StrategyState):
+    state.variables['history'] = state.interface.history(symbol, to=150)['close']
+
+def price_event(price, symbol, state: blankly.StrategyState):
+    rsi = blankly.indicators.rsi(state.variables['history'])
+    if rsi[-1] &lt; 30:
+        state.interface.market_order(symbol, side='buy', size=1)
+    elif rsi[-1] &gt; 70:
+        state.interface.market_order(symbol, side='sell', size=1)
+    state.variables['history'].append(price)
+
+exchange = blankly.CoinbasePro()
+strategy = blankly.Strategy(exchange)
+strategy.add_price_event(price_event, symbol='BTC-USD', resolution='1d', init=init)
+
+# Backtest
+results = strategy.backtest(to='1y', initial_values={'USD': 10000})
+# Or live: strategy.start()
+</code></pre>
+<h3 id="futures-strategy">Futures Strategy<a class="headerlink" href="#futures-strategy" title="Permanent link">&para;</a></h3>
+<pre><code class="language-python">import blankly
+
+exchange = blankly.BinanceFutures()
+strategy = blankly.FuturesStrategy(exchange)
+
+def futures_price_event(price, symbol, state: blankly.FuturesStrategyState):
+    state.interface.set_leverage(10, symbol)
+    state.interface.market_order(symbol, side='buy', size=0.01)
+
+strategy.add_price_event(futures_price_event, symbol='BTC-USDT', resolution='1h')
+strategy.backtest(to='6m', initial_values={'USDT': 10000})
+</code></pre>
+<h3 id="screener">Screener<a class="headerlink" href="#screener" title="Permanent link">&para;</a></h3>
+<pre><code class="language-python">import blankly
+
+def init(state):
+    state.variables['threshold'] = 70
+
+def evaluator(symbol, state):
+    prices = state.interface.history(symbol, to=20)['close']
+    rsi = blankly.indicators.rsi(prices)
+    return {'rsi': rsi[-1], 'signal': 'overbought' if rsi[-1] &gt; state.variables['threshold'] else 'neutral'}
+
+def formatter(results, state):
+    print(results)
+
+exchange = blankly.CoinbasePro()
+screener = blankly.Screener(exchange, evaluator, symbols=['BTC-USD', 'ETH-USD'],
+                            init=init, formatter=formatter)
+</code></pre>
+<h2 id="adding-a-new-exchange">Adding a New Exchange<a class="headerlink" href="#adding-a-new-exchange" title="Permanent link">&para;</a></h2>
+<div class="diagram"><pre class="mermaid">flowchart TD
+    A[Create exchange directory] --&gt; B[Implement required methods]
+    B --&gt; B1[REST API wrapper&lt;br/&gt;exchange_api.py]
+    B --&gt; B2[Exchange Interface&lt;br/&gt;exchange_interface.py]
+    B --&gt; B3[WebSocket handler&lt;br/&gt;exchange_websocket.py]
+    B --&gt; B4[Exchange class&lt;br/&gt;exchange.py]
+    B1 &amp; B2 &amp; B3 &amp; B4 --&gt; C[Register exchange]
+    C --&gt; C1[Add imports to __init__.py]
+    C1 --&gt; D[Test with Paper Trade]
+    D --&gt; D1[Unit tests in tests/exchanges/]
+    D1 --&gt; D2[Integration test with backtest]
+    D2 --&gt; E[Deploy live]
+
+    style A fill:#4a90d9,color:#fff
+    style B fill:#f5a623,color:#fff
+    style C fill:#50c878,color:#fff
+    style D fill:#9b59b6,color:#fff
+    style E fill:#d94a4a,color:#fff</pre><details><summary>Diagram source</summary><pre><code>flowchart TD
+    A[Create exchange directory] --&gt; B[Implement required methods]
+    B --&gt; B1[REST API wrapper&lt;br/&gt;exchange_api.py]
+    B --&gt; B2[Exchange Interface&lt;br/&gt;exchange_interface.py]
+    B --&gt; B3[WebSocket handler&lt;br/&gt;exchange_websocket.py]
+    B --&gt; B4[Exchange class&lt;br/&gt;exchange.py]
+    B1 &amp; B2 &amp; B3 &amp; B4 --&gt; C[Register exchange]
+    C --&gt; C1[Add imports to __init__.py]
+    C1 --&gt; D[Test with Paper Trade]
+    D --&gt; D1[Unit tests in tests/exchanges/]
+    D1 --&gt; D2[Integration test with backtest]
+    D2 --&gt; E[Deploy live]
+
+    style A fill:#4a90d9,color:#fff
+    style B fill:#f5a623,color:#fff
+    style C fill:#50c878,color:#fff
+    style D fill:#9b59b6,color:#fff
+    style E fill:#d94a4a,color:#fff</code></pre></details></div>
+
+<ol>
+<li>Create <code>src/blankly/exchanges/interfaces/{exchange_name}/</code></li>
+<li>Implement:
+   - <code>{exchange}_api.py</code> -- Raw REST API wrapper
+   - <code>{exchange}_interface.py</code> -- Extend <code>ExchangeInterface</code>, implement abstract methods
+   - <code>{exchange}_websocket.py</code> -- Extend <code>ABCExchangeWebsocket</code>
+   - <code>{exchange}.py</code> -- Extend <code>Exchange</code>, implement <code>construct_interface_and_cache()</code></li>
+<li>Add imports to <code>src/blankly/__init__.py</code></li>
+<li>Create tests in <code>tests/exchanges/interfaces/{exchange_name}/</code></li>
+</ol>
+<h3 id="interface-methods-to-implement">Interface Methods to Implement<a class="headerlink" href="#interface-methods-to-implement" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>market_order()</code></td>
+<td>Submit market order</td>
+</tr>
+<tr>
+<td><code>limit_order()</code></td>
+<td>Submit limit order</td>
+</tr>
+<tr>
+<td><code>cancel_order()</code></td>
+<td>Cancel pending order</td>
+</tr>
+<tr>
+<td><code>get_account()</code></td>
+<td>Get account balances</td>
+</tr>
+<tr>
+<td><code>get_products()</code></td>
+<td>List available trading pairs</td>
+</tr>
+<tr>
+<td><code>get_order()</code></td>
+<td>Get order status</td>
+</tr>
+<tr>
+<td><code>get_open_orders()</code></td>
+<td>List pending orders</td>
+</tr>
+<tr>
+<td><code>get_price()</code></td>
+<td>Get current price</td>
+</tr>
+<tr>
+<td><code>get_product_history()</code></td>
+<td>Get historical OHLCV data</td>
+</tr>
+</tbody>
+</table>
+<h2 id="built-in-indicators">Built-in Indicators<a class="headerlink" href="#built-in-indicators" title="Permanent link">&para;</a></h2>
+<pre><code class="language-python">import blankly
+
+blankly.indicators.sma(prices, period=20)    # Simple Moving Average
+blankly.indicators.ema(prices, period=12)    # Exponential Moving Average
+blankly.indicators.rsi(prices, period=14)    # Relative Strength Index
+blankly.indicators.macd(prices)              # MACD
+blankly.indicators.stochastic(high, low, close)  # Stochastic Oscillator
+blankly.indicators.adx(high, low, close)     # Average Directional Index
+</code></pre>
+<h2 id="cli-usage">CLI Usage<a class="headerlink" href="#cli-usage" title="Permanent link">&para;</a></h2>
+<pre><code class="language-bash">blankly init      # Initialize new project
+blankly login     # Login to platform
+blankly deploy    # Deploy model
+blankly keys add  # Add API keys interactively
+</code></pre>
+<h2 id="important-notes">Important Notes<a class="headerlink" href="#important-notes" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Always use <code>state.time</code> instead of <code>time.time()</code> in strategies</li>
+<li>Always use <code>model.sleep()</code> instead of <code>time.sleep()</code> in Model subclasses</li>
+<li>Use <code>blankly.trunc(value, decimals)</code> for exchange precision rounding</li>
+<li>Resolution strings: <code>'1m'</code>, <code>'5m'</code>, <code>'15m'</code>, <code>'1h'</code>, <code>'1d'</code></li>
+</ul>
+<h2 id="configuration-reference">Configuration Reference<a class="headerlink" href="#configuration-reference" title="Permanent link">&para;</a></h2>
+<h3 id="keysjson">keys.json<a class="headerlink" href="#keysjson" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>API_KEY</code></td>
+<td>str</td>
+<td>--</td>
+<td>Exchange API key (per exchange block)</td>
+</tr>
+<tr>
+<td><code>API_SECRET</code></td>
+<td>str</td>
+<td>--</td>
+<td>Exchange API secret (per exchange block)</td>
+</tr>
+<tr>
+<td><code>API_PASS</code></td>
+<td>str</td>
+<td>--</td>
+<td>Exchange API passphrase (Coinbase Pro only)</td>
+</tr>
+<tr>
+<td><code>sandbox</code></td>
+<td>bool</td>
+<td><code>false</code></td>
+<td>Use exchange sandbox/testnet endpoint</td>
+</tr>
+</tbody>
+</table>
+<h3 id="settingsjson">settings.json<a class="headerlink" href="#settingsjson" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>settings.use_sandbox</code></td>
+<td>bool</td>
+<td><code>false</code></td>
+<td>Route orders to sandbox environment</td>
+</tr>
+<tr>
+<td><code>settings.websocket_buffer_size</code></td>
+<td>int</td>
+<td><code>2</code></td>
+<td>WebSocket message buffer size</td>
+</tr>
+<tr>
+<td><code>settings.test_connectivity_on_auth</code></td>
+<td>bool</td>
+<td><code>true</code></td>
+<td>Verify exchange connection on startup</td>
+</tr>
+<tr>
+<td><code>settings.coinbase_pro.cash</code></td>
+<td>str</td>
+<td><code>"USD"</code></td>
+<td>Quote currency for Coinbase Pro</td>
+</tr>
+<tr>
+<td><code>settings.binance.cash</code></td>
+<td>str</td>
+<td><code>"USDT"</code></td>
+<td>Quote currency for Binance</td>
+</tr>
+<tr>
+<td><code>settings.binance.binance_tld</code></td>
+<td>str</td>
+<td><code>"com"</code></td>
+<td>Binance TLD (<code>"com"</code> or <code>"us"</code>)</td>
+</tr>
+<tr>
+<td><code>settings.alpaca.cash</code></td>
+<td>str</td>
+<td><code>"USD"</code></td>
+<td>Quote currency for Alpaca</td>
+</tr>
+<tr>
+<td><code>settings.oanda.cash</code></td>
+<td>str</td>
+<td><code>"USD"</code></td>
+<td>Quote currency for OANDA</td>
+</tr>
+</tbody>
+</table>
+<h3 id="backtestjson">backtest.json<a class="headerlink" href="#backtestjson" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>price_data.assets</code></td>
+<td>list</td>
+<td><code>[]</code></td>
+<td>Symbols to cache price data for</td>
+</tr>
+<tr>
+<td><code>price_data.exchange</code></td>
+<td>str</td>
+<td>--</td>
+<td>Exchange to source backtest data from</td>
+</tr>
+<tr>
+<td><code>price_data.start</code></td>
+<td>str</td>
+<td>--</td>
+<td>Backtest data start date (ISO format)</td>
+</tr>
+<tr>
+<td><code>price_data.end</code></td>
+<td>str</td>
+<td>--</td>
+<td>Backtest data end date (ISO format)</td>
+</tr>
+<tr>
+<td><code>price_data.resolution</code></td>
+<td>str</td>
+<td>--</td>
+<td>Bar resolution (<code>"1m"</code>, <code>"1h"</code>, <code>"1d"</code>)</td>
+</tr>
+<tr>
+<td><code>backtest_settings.initial_values</code></td>
+<td>dict</td>
+<td>--</td>
+<td>Starting balances (e.g., <code>{"USD": 10000}</code>)</td>
+</tr>
+<tr>
+<td><code>backtest_settings.GUI_output</code></td>
+<td>bool</td>
+<td><code>true</code></td>
+<td>Show interactive backtest results chart</td>
+</tr>
+<tr>
+<td><code>backtest_settings.show_tickers_with_zero</code></td>
+<td>bool</td>
+<td><code>false</code></td>
+<td>Include zero-balance assets in output</td>
+</tr>
+<tr>
+<td><code>backtest_settings.save_initial_account_value</code></td>
+<td>bool</td>
+<td><code>true</code></td>
+<td>Record initial portfolio value</td>
+</tr>
+</tbody>
+</table>
+<h3 id="strategybacktest-parameters">Strategy.backtest() Parameters<a class="headerlink" href="#strategybacktest-parameters" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>to</code></td>
+<td>str/int</td>
+<td>--</td>
+<td>Backtest duration (<code>'1y'</code>, <code>'6m'</code>) or end timestamp</td>
+</tr>
+<tr>
+<td><code>start_date</code></td>
+<td>int/str</td>
+<td>None</td>
+<td>Start timestamp (epoch seconds) or ISO date</td>
+</tr>
+<tr>
+<td><code>end_date</code></td>
+<td>int/str</td>
+<td>None</td>
+<td>End timestamp (epoch seconds) or ISO date</td>
+</tr>
+<tr>
+<td><code>initial_values</code></td>
+<td>dict</td>
+<td>None</td>
+<td>Starting balances, e.g. <code>{'USD': 10000}</code></td>
+</tr>
+<tr>
+<td><code>GUI_output</code></td>
+<td>bool</td>
+<td><code>True</code></td>
+<td>Show interactive performance chart</td>
+</tr>
+<tr>
+<td><code>save</code></td>
+<td>bool</td>
+<td><code>False</code></td>
+<td>Save backtest results to file</td>
+</tr>
+</tbody>
+</table>
+<h2 id="troubleshooting">Troubleshooting<a class="headerlink" href="#troubleshooting" title="Permanent link">&para;</a></h2>
+<h3 id="modulenotfounderror-no-module-named-newnewtulipy"><code>ModuleNotFoundError: No module named 'newnewtulipy'</code><a class="headerlink" href="#modulenotfounderror-no-module-named-newnewtulipy" title="Permanent link">&para;</a></h3>
+<p>This C extension requires build tools. On Linux: <code>sudo apt install build-essential</code>. On macOS: <code>xcode-select --install</code>. On Windows: install Visual Studio Build Tools.</p>
+<h3 id="keyerror-when-accessing-stateinterfaceaccountasset"><code>KeyError</code> when accessing <code>state.interface.account[asset]</code><a class="headerlink" href="#keyerror-when-accessing-stateinterfaceaccountasset" title="Permanent link">&para;</a></h3>
+<p>The asset key must match the exchange's symbol format. For Coinbase Pro use <code>'BTC'</code> (not <code>'BTC-USD'</code>). Check <code>state.base_asset</code> and <code>state.quote_asset</code> for the correct identifiers.</p>
+<h3 id="backtest-returns-empty-or-flat-results">Backtest returns empty or flat results<a class="headerlink" href="#backtest-returns-empty-or-flat-results" title="Permanent link">&para;</a></h3>
+<p>Ensure <code>initial_values</code> matches the quote currency. For crypto, use <code>{'USD': 10000}</code> or <code>{'USDT': 10000}</code> depending on the exchange. Also verify the <code>resolution</code> parameter matches available data granularity.</p>
+<h3 id="attributeerror-nonetype-object-has-no-attribute-get_price"><code>AttributeError: 'NoneType' object has no attribute 'get_price'</code><a class="headerlink" href="#attributeerror-nonetype-object-has-no-attribute-get_price" title="Permanent link">&para;</a></h3>
+<p>The exchange interface was not properly initialized. When using <code>KeylessExchange</code>, ensure you pass a <code>PriceReader</code> with data covering the full backtest period. For live exchanges, verify <code>keys.json</code> has valid credentials.</p>
+<h3 id="websocket-disconnections-during-live-trading">WebSocket disconnections during live trading<a class="headerlink" href="#websocket-disconnections-during-live-trading" title="Permanent link">&para;</a></h3>
+<p>Blankly auto-reconnects WebSocket feeds, but network interruptions can cause missed ticks. Implement defensive checks in <code>price_event</code> callbacks: verify <code>price &gt; 0</code> and handle <code>None</code> values in <code>state.variables</code>.</p>
+<h3 id="decimalinvalidoperation-or-precision-errors"><code>decimal.InvalidOperation</code> or precision errors<a class="headerlink" href="#decimalinvalidoperation-or-precision-errors" title="Permanent link">&para;</a></h3>
+<p>Exchanges enforce specific lot sizes and tick increments. Use <code>blankly.trunc(value, decimals)</code> to round order sizes. Check <code>state.interface.get_products()</code> for each symbol's precision rules.</p>
+<h3 id="timetime-returns-wrong-value-in-backtests"><code>time.time()</code> returns wrong value in backtests<a class="headerlink" href="#timetime-returns-wrong-value-in-backtests" title="Permanent link">&para;</a></h3>
+<p>Never use <code>time.time()</code> in strategy code. Use <code>state.time</code> inside strategy callbacks, or <code>model.time</code> inside Model subclasses. In backtesting, <code>time.time()</code> returns wall-clock time, not simulated time.</p>
+<h3 id="paper-trade-results-differ-from-live-execution">Paper trade results differ from live execution<a class="headerlink" href="#paper-trade-results-differ-from-live-execution" title="Permanent link">&para;</a></h3>
+<p>Paper trading uses mid-price fills, while live exchanges fill at bid/ask. Fees in paper trading use your actual fee tier from the exchange. Slippage and partial fills are not simulated.</p>
+<h2 id="security-considerations">Security Considerations<a class="headerlink" href="#security-considerations" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>API key storage</strong>: Store exchange credentials in <code>keys.json</code>, which should be added to <code>.gitignore</code>. Never commit API keys to version control. Use environment variables or a secrets manager for production deployments.</li>
+<li><strong>Key permissions</strong>: Configure exchange API keys with the minimum required permissions. For backtesting-only workflows, use read-only keys. For live trading, enable trading but disable withdrawal permissions.</li>
+<li><strong>Sandbox testing</strong>: Always set <code>"use_sandbox": true</code> in <code>settings.json</code> during development. This routes orders to the exchange's testnet, preventing accidental real-money trades.</li>
+<li><strong>KeylessExchange for safe testing</strong>: Use <code>blankly.KeylessExchange</code> with <code>PriceReader</code> for backtesting without any exchange credentials. This eliminates the risk of accidental live orders.</li>
+<li><strong>WebSocket security</strong>: All exchange WebSocket connections use TLS (wss://). The framework does not support unencrypted WebSocket connections.</li>
+<li><strong>Deployment tokens</strong>: The <code>blankly login</code> / <code>blankly deploy</code> commands authenticate with the Blankly platform. Treat deployment tokens as secrets and rotate them periodically.</li>
+<li><strong>Rate limiting</strong>: Exchange API calls are not rate-limited by default. Excessive calls can trigger IP bans. Use appropriate <code>resolution</code> intervals (avoid sub-second for REST-based price events).</li>
+</ul>
+<hr />
+<h2 id="see-also">See Also<a class="headerlink" href="#see-also" title="Permanent link">&para;</a></h2>
+<ul>
+<li><a href="README.md">README</a> — Project overview and quick start</li>
+<li><a href="architecture.md">Architecture</a> — System design and components</li>
+<li><a href="workflow.md">Workflow</a> — Event flows and processing pipelines</li>
+<li><a href="state-management.md">State Management</a> — State lifecycle and data models</li>
+</ul></main>
+<script type="module">
+import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@12.1.0/dist/mermaid.esm.min.mjs';
+mermaid.initialize({startOnLoad:true,securityLevel:'strict',theme:'default',flowchart:{useMaxWidth:true},sequence:{useMaxWidth:true}});
+</script></body></html>
