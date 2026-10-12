@@ -10,7 +10,15 @@ Run date: 2026-10-12. Branch: `feature/ayu_develop`. Interpreter: `3.15.0 (main,
 | build | passed |
 | tests | failed |
 
-## Current result and compatibility decisions
+## Current native indicator repair
+
+Source `7d732ba7a55a99606375a3978e26160e9eac44b8` fixes the impossible indicator marker that excluded the native backend on every supported Python version. The maintained uv environment uses the licensed adjacent latest OctoBot Tulipy source with an explicit floating-point compiler contract; NumPy 2.4.2 is the highest version accepted by that SDK’s exact dependency. All 31 existing indicator function bodies, original pickle arrays and test assertions remain unchanged. Four unused `pkg_resources` imports were removed for the current setuptools environment.
+
+All **12 original indicator cases and five metric cases pass** on selected Python 3.15. Frozen all-group/all-extra synchronization, strict compilation, wheel and source distribution builds pass. Full pytest with collection errors retained reports **17 passed, two failed and 45 errors**; 63 executable cases were collected, and the error count includes the credential-driven collection error. Every retained failing trace reaches the missing original `tests/config/keys.json`. Authenticated venue cases are not claimed to pass, and discovery of the blocked interface directory remains incomplete. No credentials, new tests or fake responses were supplied.
+
+See [development and native provenance](development.md) and [exact current command evidence](maintenance/index.md). Earlier failed attempts below remain historical evidence.
+
+## Earlier compatibility decisions
 
 - The full pytest suite is attempted without changing discovery. Live exchange test collection reads missing Keys.json and cannot proceed without the original credential setup.
 - The retained Alpaca SDK requires msgpack==1.0.3; that exact compatible pin is preserved instead of forcing a contradictory latest major.
@@ -20,7 +28,7 @@ Current unresolved checks:
 
 - tests: exit 2; see [check record](maintenance/index.html)
 
-## Latest full-suite output
+## Historical initial full-suite output
 
 ```text
 $ uv run --no-sync python -m pytest

@@ -1,19 +1,6 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Current uv development workflow</title><style>
-:root{color-scheme:light dark;--bg:#f6f8fa;--paper:#fff;--fg:#182332;--muted:#526274;--line:#d9e0e7;--accent:#1769aa}
-@media(prefers-color-scheme:dark){:root{--bg:#111820;--paper:#192330;--fg:#e6edf3;--muted:#a0b3c5;--line:#344354;--accent:#71b7ee}}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.7 system-ui,-apple-system,sans-serif}
-header{border-bottom:1px solid var(--line);padding:16px max(24px,calc((100vw - 1120px)/2));background:var(--paper);font-size:14px}
-main{max-width:1120px;margin:32px auto;padding:40px 48px;background:var(--paper);border:1px solid var(--line);border-radius:12px}
-h1,h2,h3,h4{line-height:1.3;scroll-margin-top:24px}h1{font-size:2.1rem}h2{margin-top:2.5em;border-bottom:1px solid var(--line);padding-bottom:.35em}h3{margin-top:1.8em}
-a{color:var(--accent);text-underline-offset:3px}code{font:14px/1.6 ui-monospace,SFMono-Regular,Menlo,monospace;background:var(--bg);border-radius:4px;padding:2px 5px}pre{overflow:auto;border:1px solid var(--line);background:var(--bg);padding:16px;border-radius:7px}pre code{padding:0;background:none}
-table{border-collapse:collapse;width:100%;display:block;overflow-x:auto;font-size:14px}th,td{border:1px solid var(--line);padding:9px 12px;text-align:left}th{background:var(--bg)}blockquote{border-left:4px solid var(--accent);margin:16px 0;padding:4px 20px;color:var(--muted)}
-.diagram{overflow-x:auto;margin:24px 0;padding:20px;border:1px solid var(--line);border-radius:8px;background:#fff;color:#182332}.mermaid{border:0;background:none;text-align:center}.mermaid svg{height:auto;max-width:100%}details{font-size:13px;color:#526274}.headerlink{margin-left:.4em;font-size:.7em;text-decoration:none;color:var(--muted)}
-@media(max-width:740px){main{margin:0;padding:24px 18px;border:0;border-radius:0}h1{font-size:1.7rem}.diagram{padding:8px}}
-@media print{header,details,.headerlink{display:none}body,main{background:#fff;color:#000;border:0;margin:0;padding:0}a{color:#000}.diagram,pre{break-inside:avoid}}
-</style></head><body><header>Engineering documentation · <a href="development.md">Markdown source</a></header><main><!-- ayu-maintenance-2026-10-12 -->
-<h1 id="current-uv-development-workflow">Current uv development workflow<a class="headerlink" href="#current-uv-development-workflow" title="Permanent link">&para;</a></h1>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Current uv development workflow</title><style>html{color-scheme:light dark}body{margin:0;background:#f5f7fa;color:#172333;font:16px/1.7 system-ui,sans-serif}main{max-width:1120px;margin:28px auto;background:white;padding:40px;border:1px solid #dbe2ea;border-radius:10px}h1,h2,h3{line-height:1.25}h2{margin-top:2em;border-bottom:1px solid #dbe2ea;padding-bottom:.4em}a{color:#1769aa}pre{overflow:auto;padding:16px;background:#f5f7fa;border:1px solid #dbe2ea;border-radius:6px}code{font:14px/1.6 ui-monospace,monospace}table{border-collapse:collapse;display:block;overflow:auto}th,td{border:1px solid #dbe2ea;padding:8px 12px;text-align:left;vertical-align:top}blockquote{margin-left:0;border-left:4px solid #1769aa;padding-left:18px}@media(max-width:700px){main{margin:8px;padding:18px}body{font-size:15px}}@media(prefers-color-scheme:dark){body{background:#111820;color:#e7edf5}main{background:#192330;border-color:#344354}pre{background:#111820}a{color:#78b9ef}th,td,h2,pre{border-color:#344354}}@media print{main{margin:0;border:0;padding:0}a{color:inherit}pre,table{overflow:visible}}</style></head><body><main><!-- ayu-maintenance-2026-10-12 -->
+<h1 id="current-uv-development-workflow">Current uv development workflow</h1>
 <p>The maintained branch is <code>feature/ayu_develop</code>. The selected interpreter is Python <code>3.15</code>; <code>requires-python</code> records the range that was actually resolved. Python 3.15 was attempted first. Dependency/native-wheel failures and fallback evidence are recorded in <a href="validation.md">validation.md</a>.</p>
 <pre><code class="language-sh">export UV_PYTHON_PREFERENCE=only-managed
 uv python install 3.15
@@ -27,25 +14,25 @@ uv run --no-sync python -m pytest
 <p>The <code>src/</code> layout and build-backend package discovery preserve public import names. Wheel/sdist resources include the source-associated data and templates. Optional vendor SDKs, live credentials, databases and graphical/native libraries retain their original runtime requirements. Examples and test fixtures are not promoted into the library API.</p>
 <!-- prior-development-notes -->
 
-<h2 id="compatibility-decisions">Compatibility decisions<a class="headerlink" href="#compatibility-decisions" title="Permanent link">&para;</a></h2>
+<h2 id="compatibility-decisions">Compatibility decisions</h2>
 <ul>
 <li>The full pytest suite is attempted without changing discovery. Live exchange test collection reads missing Keys.json and cannot proceed without the original credential setup.</li>
 <li>The retained Alpaca SDK requires msgpack==1.0.3; that exact compatible pin is preserved instead of forcing a contradictory latest major.</li>
 <li>Python 3.15 actual installation succeeds including source builds.</li>
 </ul>
-<h1 id="blankly-development-guide">Blankly -- Development Guide<a class="headerlink" href="#blankly-development-guide" title="Permanent link">&para;</a></h1>
-<h2 id="setup">Setup<a class="headerlink" href="#setup" title="Permanent link">&para;</a></h2>
-<h3 id="from-pypi">From PyPI<a class="headerlink" href="#from-pypi" title="Permanent link">&para;</a></h3>
+<h1 id="blankly-development-guide">Blankly -- Development Guide</h1>
+<h2 id="setup">Setup</h2>
+<h3 id="from-pypi">From PyPI</h3>
 <pre><code class="language-bash">pip install blankly
 blankly init
 </code></pre>
-<h3 id="from-source">From Source<a class="headerlink" href="#from-source" title="Permanent link">&para;</a></h3>
+<h3 id="from-source">From Source</h3>
 <pre><code class="language-bash">git clone https://github.com/Blankly-Finance/Blankly.git
 cd blankly
 pip install -e .
 pip install pytest pytest-mock
 </code></pre>
-<h3 id="configuration-files">Configuration Files<a class="headerlink" href="#configuration-files" title="Permanent link">&para;</a></h3>
+<h3 id="configuration-files">Configuration Files</h3>
 <p>After <code>blankly init</code>, four configuration files are created:</p>
 <table>
 <thead>
@@ -73,7 +60,7 @@ pip install pytest pytest-mock
 </tr>
 </tbody>
 </table>
-<h2 id="testing">Testing<a class="headerlink" href="#testing" title="Permanent link">&para;</a></h2>
+<h2 id="testing">Testing</h2>
 <pre><code class="language-bash"># Run all tests
 pytest
 
@@ -86,15 +73,15 @@ pytest tests/test_auth_constructor.py::TestAuthConstructor::test_method -v
 # Generate coverage
 pytest --cov=blankly tests/
 </code></pre>
-<h2 id="code-standards">Code Standards<a class="headerlink" href="#code-standards" title="Permanent link">&para;</a></h2>
+<h2 id="code-standards">Code Standards</h2>
 <ul>
 <li><strong>Formatter</strong>: yapf (PEP 8 style)</li>
 <li><strong>Python versions</strong>: 3.7, 3.8, 3.9, 3.10</li>
 <li><strong>Test framework</strong>: pytest with unittest.TestCase classes</li>
 <li><strong>Naming</strong>: snake_case for functions/variables, PascalCase for classes</li>
 </ul>
-<h2 id="building-a-strategy">Building a Strategy<a class="headerlink" href="#building-a-strategy" title="Permanent link">&para;</a></h2>
-<h3 id="minimal-price-event-strategy">Minimal Price Event Strategy<a class="headerlink" href="#minimal-price-event-strategy" title="Permanent link">&para;</a></h3>
+<h2 id="building-a-strategy">Building a Strategy</h2>
+<h3 id="minimal-price-event-strategy">Minimal Price Event Strategy</h3>
 <pre><code class="language-python">import blankly
 
 def init(symbol, state: blankly.StrategyState):
@@ -116,7 +103,7 @@ strategy.add_price_event(price_event, symbol='BTC-USD', resolution='1d', init=in
 results = strategy.backtest(to='1y', initial_values={'USD': 10000})
 # Or live: strategy.start()
 </code></pre>
-<h3 id="futures-strategy">Futures Strategy<a class="headerlink" href="#futures-strategy" title="Permanent link">&para;</a></h3>
+<h3 id="futures-strategy">Futures Strategy</h3>
 <pre><code class="language-python">import blankly
 
 exchange = blankly.BinanceFutures()
@@ -129,7 +116,7 @@ def futures_price_event(price, symbol, state: blankly.FuturesStrategyState):
 strategy.add_price_event(futures_price_event, symbol='BTC-USDT', resolution='1h')
 strategy.backtest(to='6m', initial_values={'USDT': 10000})
 </code></pre>
-<h3 id="screener">Screener<a class="headerlink" href="#screener" title="Permanent link">&para;</a></h3>
+<h3 id="screener">Screener</h3>
 <pre><code class="language-python">import blankly
 
 def init(state):
@@ -147,8 +134,8 @@ exchange = blankly.CoinbasePro()
 screener = blankly.Screener(exchange, evaluator, symbols=['BTC-USD', 'ETH-USD'],
                             init=init, formatter=formatter)
 </code></pre>
-<h2 id="adding-a-new-exchange">Adding a New Exchange<a class="headerlink" href="#adding-a-new-exchange" title="Permanent link">&para;</a></h2>
-<div class="diagram"><pre class="mermaid">flowchart TD
+<h2 id="adding-a-new-exchange">Adding a New Exchange</h2>
+<div class="diagram"><svg id="mermaid-1791781954952" width="100%" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" class="flowchart" style="max-width: 100%; height: auto;" viewBox="4 4 842.28125 1072" role="graphics-document document" aria-roledescription="flowchart-v2"><style>#mermaid-1791781954952{font-family:"trebuchet ms",verdana,arial,sans-serif;font-size:16px;fill:#333;}@keyframes edge-animation-frame{from{stroke-dashoffset:0;}}@keyframes dash{to{stroke-dashoffset:0;}}#mermaid-1791781954952 .edge-animation-slow{stroke-dasharray:9,5!important;stroke-dashoffset:900;animation:dash 50s linear infinite;stroke-linecap:round;}#mermaid-1791781954952 .edge-animation-fast{stroke-dasharray:9,5!important;stroke-dashoffset:900;animation:dash 20s linear infinite;stroke-linecap:round;}#mermaid-1791781954952 .error-icon{fill:#552222;}#mermaid-1791781954952 .error-text{fill:#552222;stroke:#552222;}#mermaid-1791781954952 .edge-thickness-normal{stroke-width:1px;}#mermaid-1791781954952 .edge-thickness-thick{stroke-width:3.5px;}#mermaid-1791781954952 .edge-pattern-solid{stroke-dasharray:0;}#mermaid-1791781954952 .edge-thickness-invisible{stroke-width:0;fill:none;}#mermaid-1791781954952 .edge-pattern-dashed{stroke-dasharray:3;}#mermaid-1791781954952 .edge-pattern-dotted{stroke-dasharray:2;}#mermaid-1791781954952 .marker{fill:#333333;stroke:#333333;}#mermaid-1791781954952 .marker.cross{stroke:#333333;}#mermaid-1791781954952 svg{font-family:"trebuchet ms",verdana,arial,sans-serif;font-size:16px;}#mermaid-1791781954952 p{margin:0;}#mermaid-1791781954952 .label{font-family:"trebuchet ms",verdana,arial,sans-serif;color:#333;}#mermaid-1791781954952 .cluster-label text{fill:#333;}#mermaid-1791781954952 .cluster-label span{color:#333;}#mermaid-1791781954952 .cluster-label span p{background-color:transparent;}#mermaid-1791781954952 .label text,#mermaid-1791781954952 span{fill:#333;color:#333;}#mermaid-1791781954952 .node rect,#mermaid-1791781954952 .node circle,#mermaid-1791781954952 .node ellipse,#mermaid-1791781954952 .node polygon,#mermaid-1791781954952 .node path{fill:#ECECFF;stroke:#9370DB;stroke-width:1px;}#mermaid-1791781954952 .rough-node .label text,#mermaid-1791781954952 .node .label text,#mermaid-1791781954952 .image-shape .label,#mermaid-1791781954952 .icon-shape .label{text-anchor:middle;}#mermaid-1791781954952 .node .katex path{fill:#000;stroke:#000;stroke-width:1px;}#mermaid-1791781954952 .rough-node .label,#mermaid-1791781954952 .node .label,#mermaid-1791781954952 .image-shape .label,#mermaid-1791781954952 .icon-shape .label{text-align:center;}#mermaid-1791781954952 .node.clickable{cursor:pointer;}#mermaid-1791781954952 .root .anchor path{fill:#333333!important;stroke-width:0;stroke:#333333;}#mermaid-1791781954952 .arrowheadPath{fill:#333333;}#mermaid-1791781954952 .edgePaths .path{stroke:#333333;stroke-width:1px;}#mermaid-1791781954952 .flowchart-link{stroke:#333333;fill:none;}#mermaid-1791781954952 .edgeLabel{background-color:rgba(232,232,232, 0.8);text-align:center;}#mermaid-1791781954952 .edgeLabel p{background-color:rgba(232,232,232, 0.8);}#mermaid-1791781954952 .edgeLabel rect{opacity:0.5;background-color:rgba(232,232,232, 0.8);fill:rgba(232,232,232, 0.8);}#mermaid-1791781954952 .labelBkg{background-color:rgba(232, 232, 232, 0.5);}#mermaid-1791781954952 .cluster rect{fill:#ffffde;stroke:#aaaa33;stroke-width:1px;}#mermaid-1791781954952 .cluster text{fill:#333;}#mermaid-1791781954952 .cluster span{color:#333;}#mermaid-1791781954952 .node .collapsed-indicator{fill:#aaaa33;stroke:none;opacity:0.6;}#mermaid-1791781954952 .node .collapsed-separator{stroke:#aaaa33;stroke-width:0.75px;}#mermaid-1791781954952 div.mermaidTooltip{position:absolute;text-align:center;max-width:200px;padding:2px;font-family:"trebuchet ms",verdana,arial,sans-serif;font-size:12px;background:hsl(80, 100%, 96.2745098039%);border:1px solid #aaaa33;border-radius:2px;pointer-events:none;z-index:100;}#mermaid-1791781954952 .flowchartTitleText{text-anchor:middle;font-size:18px;fill:#333;}#mermaid-1791781954952 rect.text{fill:none;stroke-width:0;}#mermaid-1791781954952 .icon-shape,#mermaid-1791781954952 .image-shape{background-color:rgba(232,232,232, 0.8);text-align:center;}#mermaid-1791781954952 .icon-shape p,#mermaid-1791781954952 .image-shape p{background-color:rgba(232,232,232, 0.8);padding:2px;}#mermaid-1791781954952 .icon-shape .label rect,#mermaid-1791781954952 .image-shape .label rect{opacity:0.5;background-color:rgba(232,232,232, 0.8);fill:rgba(232,232,232, 0.8);}#mermaid-1791781954952 .label-icon{display:inline-block;height:1em;overflow:visible;vertical-align:-0.125em;}#mermaid-1791781954952 .node .label-icon path{fill:currentColor;stroke:revert;stroke-width:revert;}#mermaid-1791781954952 .node .neo-node{stroke:#9370DB;}#mermaid-1791781954952 [data-look="neo"].node rect,#mermaid-1791781954952 [data-look="neo"].cluster rect,#mermaid-1791781954952 [data-look="neo"].node polygon{stroke:#9370DB;filter:drop-shadow(1px 2px 2px rgba(185, 185, 185, 1));}#mermaid-1791781954952 [data-look="neo"].swimlane.cluster rect{filter:none;}#mermaid-1791781954952 [data-look="neo"].node path{stroke:#9370DB;stroke-width:1px;}#mermaid-1791781954952 [data-look="neo"].node .outer-path{filter:drop-shadow(1px 2px 2px rgba(185, 185, 185, 1));}#mermaid-1791781954952 [data-look="neo"].node .neo-line path{stroke:#9370DB;filter:none;}#mermaid-1791781954952 [data-look="neo"].node circle{stroke:#9370DB;filter:drop-shadow(1px 2px 2px rgba(185, 185, 185, 1));}#mermaid-1791781954952 [data-look="neo"].node circle .state-start{fill:#000000;}#mermaid-1791781954952 [data-look="neo"].icon-shape .icon{fill:#9370DB;filter:drop-shadow(1px 2px 2px rgba(185, 185, 185, 1));}#mermaid-1791781954952 [data-look="neo"].icon-shape .icon-neo path{stroke:#9370DB;filter:drop-shadow(1px 2px 2px rgba(185, 185, 185, 1));}#mermaid-1791781954952 :root{--mermaid-font-family:"trebuchet ms",verdana,arial,sans-serif;}</style><g><marker id="mermaid-1791781954952_flowchart-v2-pointEnd" class="marker flowchart-v2" viewBox="0 0 10 10" refX="5" refY="5" markerUnits="userSpaceOnUse" markerWidth="8" markerHeight="8" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" class="arrowMarkerPath" style="stroke-width: 1; stroke-dasharray: 1, 0;"></path></marker><marker id="mermaid-1791781954952_flowchart-v2-pointStart" class="marker flowchart-v2" viewBox="0 0 10 10" refX="4.5" refY="5" markerUnits="userSpaceOnUse" markerWidth="8" markerHeight="8" orient="auto"><path d="M 0 5 L 10 10 L 10 0 z" class="arrowMarkerPath" style="stroke-width: 1; stroke-dasharray: 1, 0;"></path></marker><marker id="mermaid-1791781954952_flowchart-v2-pointEnd-margin" class="marker flowchart-v2" viewBox="0 0 11.5 14" refX="11.5" refY="7" markerUnits="userSpaceOnUse" markerWidth="10.5" markerHeight="14" orient="auto"><path d="M 0 0 L 11.5 7 L 0 14 z" class="arrowMarkerPath" style="stroke-width: 0; stroke-dasharray: 1, 0;"></path></marker><marker id="mermaid-1791781954952_flowchart-v2-pointStart-margin" class="marker flowchart-v2" viewBox="0 0 11.5 14" refX="1" refY="7" markerUnits="userSpaceOnUse" markerWidth="11.5" markerHeight="14" orient="auto"><polygon points="0,7 11.5,14 11.5,0" class="arrowMarkerPath" style="stroke-width: 0; stroke-dasharray: 1, 0;"></polygon></marker><marker id="mermaid-1791781954952_flowchart-v2-circleEnd" class="marker flowchart-v2" viewBox="0 0 10 10" refX="11" refY="5" markerUnits="userSpaceOnUse" markerWidth="11" markerHeight="11" orient="auto"><circle cx="5" cy="5" r="5" class="arrowMarkerPath" style="stroke-width: 1; stroke-dasharray: 1, 0;"></circle></marker><marker id="mermaid-1791781954952_flowchart-v2-circleStart" class="marker flowchart-v2" viewBox="0 0 10 10" refX="-1" refY="5" markerUnits="userSpaceOnUse" markerWidth="11" markerHeight="11" orient="auto"><circle cx="5" cy="5" r="5" class="arrowMarkerPath" style="stroke-width: 1; stroke-dasharray: 1, 0;"></circle></marker><marker id="mermaid-1791781954952_flowchart-v2-circleEnd-margin" class="marker flowchart-v2" viewBox="0 0 10 10" refY="5" refX="12.25" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="14" orient="auto"><circle cx="5" cy="5" r="5" class="arrowMarkerPath" style="stroke-width: 0; stroke-dasharray: 1, 0;"></circle></marker><marker id="mermaid-1791781954952_flowchart-v2-circleStart-margin" class="marker flowchart-v2" viewBox="0 0 10 10" refX="-2" refY="5" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="14" orient="auto"><circle cx="5" cy="5" r="5" class="arrowMarkerPath" style="stroke-width: 0; stroke-dasharray: 1, 0;"></circle></marker><marker id="mermaid-1791781954952_flowchart-v2-crossEnd" class="marker cross flowchart-v2" viewBox="0 0 11 11" refX="12" refY="5.2" markerUnits="userSpaceOnUse" markerWidth="11" markerHeight="11" orient="auto"><path d="M 1,1 l 9,9 M 10,1 l -9,9" class="arrowMarkerPath" style="stroke-width: 2; stroke-dasharray: 1, 0;"></path></marker><marker id="mermaid-1791781954952_flowchart-v2-crossStart" class="marker cross flowchart-v2" viewBox="0 0 11 11" refX="-1" refY="5.2" markerUnits="userSpaceOnUse" markerWidth="11" markerHeight="11" orient="auto"><path d="M 1,1 l 9,9 M 10,1 l -9,9" class="arrowMarkerPath" style="stroke-width: 2; stroke-dasharray: 1, 0;"></path></marker><marker id="mermaid-1791781954952_flowchart-v2-crossEnd-margin" class="marker cross flowchart-v2" viewBox="0 0 15 15" refX="17.7" refY="7.5" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" orient="auto"><path d="M 1,1 L 14,14 M 1,14 L 14,1" class="arrowMarkerPath" style="stroke-width: 2.5;"></path></marker><marker id="mermaid-1791781954952_flowchart-v2-crossStart-margin" class="marker cross flowchart-v2" viewBox="0 0 15 15" refX="-3.5" refY="7.5" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="12" orient="auto"><path d="M 1,1 L 14,14 M 1,14 L 14,1" class="arrowMarkerPath" style="stroke-width: 2.5; stroke-dasharray: 1, 0;"></path></marker><g class="root"><g class="clusters"></g><g class="edges edgePaths"><path d="M422.74609375,108L422.74609375,144" id="mermaid-1791781954952-L_A_B_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style="stroke-dasharray: 0 0 32 4; stroke-dashoffset: 0;;" data-edge="true" data-et="edge" data-id="L_A_B_0" data-points="W3sieCI6NDIyLjc0NjA5Mzc1LCJ5IjoxMDh9LHsieCI6NDIyLjc0NjA5Mzc1LCJ5IjoxNDh9XQ==" data-look="neo" marker-end="url(#mermaid-1791781954952_flowchart-v2-pointEnd-margin)"></path><path d="M383.14609375,244L383.14609375,256.9289321881345Q383.14609375,264 376.0750259381345,264L95.20388031186548,264Q88.1328125,264 88.1328125,271.0710678118655L88.1328125,300" id="mermaid-1791781954952-L_B_B1_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style="stroke-dasharray: 0 0 341.68499755859375 4; stroke-dashoffset: 0;;" data-edge="true" data-et="edge" data-id="L_B_B1_0" data-points="W3sieCI6MzgzLjE0NjA5Mzc1LCJ5IjoyNDR9LHsieCI6MzgzLjE0NjA5Mzc1LCJ5IjoyNjR9LHsieCI6ODguMTMyODEyNSwieSI6MjY0fSx7IngiOjg4LjEzMjgxMjUsInkiOjMwNH1d" data-look="neo" marker-end="url(#mermaid-1791781954952_flowchart-v2-pointEnd-margin)"></path><path d="M409.54609375,244L409.54609375,276.9289321881345Q409.54609375,284 402.47502593813454,284L309.3132553118655,284Q302.2421875,284 302.2421875,291.0710678118655L302.2421875,312" id="mermaid-1791781954952-L_B_B2_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style="stroke-dasharray: 0 0 165.9755859375 4; stroke-dashoffset: 0;;" data-edge="true" data-et="edge" data-id="L_B_B2_0" data-points="W3sieCI6NDA5LjU0NjA5Mzc1LCJ5IjoyNDR9LHsieCI6NDA5LjU0NjA5Mzc1LCJ5IjoyODR9LHsieCI6MzAyLjI0MjE4NzUsInkiOjI4NH0seyJ4IjozMDIuMjQyMTg3NSwieSI6MzE2fV0=" data-look="neo" marker-end="url(#mermaid-1791781954952_flowchart-v2-pointEnd-margin)"></path><path d="M435.94609375,244L435.94609375,276.9289321881345Q435.94609375,284 443.01716156186546,284L536.1789321881345,284Q543.25,284 543.25,291.0710678118655L543.25,312" id="mermaid-1791781954952-L_B_B3_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style="stroke-dasharray: 0 0 165.97560119628906 4; stroke-dashoffset: 0;;" data-edge="true" data-et="edge" data-id="L_B_B3_0" data-points="W3sieCI6NDM1Ljk0NjA5Mzc1LCJ5IjoyNDR9LHsieCI6NDM1Ljk0NjA5Mzc1LCJ5IjoyODR9LHsieCI6NTQzLjI1LCJ5IjoyODR9LHsieCI6NTQzLjI1LCJ5IjozMTZ9XQ==" data-look="neo" marker-end="url(#mermaid-1791781954952_flowchart-v2-pointEnd-margin)"></path><path d="M462.34609375,244L462.34609375,256.9289321881345Q462.34609375,264 469.4171615618655,264L755.2101821881345,264Q762.28125,264 762.28125,271.0710678118655L762.28125,312" id="mermaid-1791781954952-L_B_B4_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style="stroke-dasharray: 0 0 358.60687255859375 4; stroke-dashoffset: 0;;" data-edge="true" data-et="edge" data-id="L_B_B4_0" data-points="W3sieCI6NDYyLjM0NjA5Mzc1LCJ5IjoyNDR9LHsieCI6NDYyLjM0NjA5Mzc1LCJ5IjoyNjR9LHsieCI6NzYyLjI4MTI1LCJ5IjoyNjR9LHsieCI6NzYyLjI4MTI1LCJ5IjozMTZ9XQ==" data-look="neo" marker-end="url(#mermaid-1791781954952_flowchart-v2-pointEnd-margin)"></path><path d="M88.1328125,400L88.1328125,432.9289321881345Q88.1328125,440 95.20388031186548,440L376.0750259381345,440Q383.14609375,440 383.14609375,447.0710678118655L383.14609375,456" id="mermaid-1791781954952-L_B1_C_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style="stroke-dasharray: 0 0 341.68499755859375 4; stroke-dashoffset: 0;;" data-edge="true" data-et="edge" data-id="L_B1_C_0" data-points="W3sieCI6ODguMTMyODEyNSwieSI6NDAwfSx7IngiOjg4LjEzMjgxMjUsInkiOjQ0MH0seyJ4IjozODMuMTQ2MDkzNzUsInkiOjQ0MH0seyJ4IjozODMuMTQ2MDkzNzUsInkiOjQ2MH1d" data-look="neo" marker-end="url(#mermaid-1791781954952_flowchart-v2-pointEnd-margin)"></path><path d="M302.2421875,388L302.2421875,412.9289321881345Q302.2421875,420 309.3132553118655,420L402.47502593813454,420Q409.54609375,420 409.54609375,427.0710678118655L409.54609375,456" id="mermaid-1791781954952-L_B2_C_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style="stroke-dasharray: 0 0 165.9755859375 4; stroke-dashoffset: 0;;" data-edge="true" data-et="edge" data-id="L_B2_C_0" data-points="W3sieCI6MzAyLjI0MjE4NzUsInkiOjM4OH0seyJ4IjozMDIuMjQyMTg3NSwieSI6NDIwfSx7IngiOjQwOS41NDYwOTM3NSwieSI6NDIwfSx7IngiOjQwOS41NDYwOTM3NSwieSI6NDYwfV0=" data-look="neo" marker-end="url(#mermaid-1791781954952_flowchart-v2-pointEnd-margin)"></path><path d="M543.25,388L543.25,412.9289321881345Q543.25,420 536.1789321881345,420L443.01716156186546,420Q435.94609375,420 435.94609375,427.0710678118655L435.94609375,456" id="mermaid-1791781954952-L_B3_C_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style="stroke-dasharray: 0 0 165.97561645507812 4; stroke-dashoffset: 0;;" data-edge="true" data-et="edge" data-id="L_B3_C_0" data-points="W3sieCI6NTQzLjI1LCJ5IjozODh9LHsieCI6NTQzLjI1LCJ5Ijo0MjB9LHsieCI6NDM1Ljk0NjA5Mzc1LCJ5Ijo0MjB9LHsieCI6NDM1Ljk0NjA5Mzc1LCJ5Ijo0NjB9XQ==" data-look="neo" marker-end="url(#mermaid-1791781954952_flowchart-v2-pointEnd-margin)"></path><path d="M762.28125,388L762.28125,432.9289321881345Q762.28125,440 755.2101821881345,440L469.4171615618655,440Q462.34609375,440 462.34609375,447.0710678118655L462.34609375,456" id="mermaid-1791781954952-L_B4_C_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style="stroke-dasharray: 0 0 358.60687255859375 4; stroke-dashoffset: 0;;" data-edge="true" data-et="edge" data-id="L_B4_C_0" data-points="W3sieCI6NzYyLjI4MTI1LCJ5IjozODh9LHsieCI6NzYyLjI4MTI1LCJ5Ijo0NDB9LHsieCI6NDYyLjM0NjA5Mzc1LCJ5Ijo0NDB9LHsieCI6NDYyLjM0NjA5Mzc1LCJ5Ijo0NjB9XQ==" data-look="neo" marker-end="url(#mermaid-1791781954952_flowchart-v2-pointEnd-margin)"></path><path d="M422.74609375,532L422.74609375,568" id="mermaid-1791781954952-L_C_C1_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style="stroke-dasharray: 0 0 32 4; stroke-dashoffset: 0;;" data-edge="true" data-et="edge" data-id="L_C_C1_0" data-points="W3sieCI6NDIyLjc0NjA5Mzc1LCJ5Ijo1MzJ9LHsieCI6NDIyLjc0NjA5Mzc1LCJ5Ijo1NzJ9XQ==" data-look="neo" marker-end="url(#mermaid-1791781954952_flowchart-v2-pointEnd-margin)"></path><path d="M422.74609375,644L422.74609375,680" id="mermaid-1791781954952-L_C1_D_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style="stroke-dasharray: 0 0 32 4; stroke-dashoffset: 0;;" data-edge="true" data-et="edge" data-id="L_C1_D_0" data-points="W3sieCI6NDIyLjc0NjA5Mzc1LCJ5Ijo2NDR9LHsieCI6NDIyLjc0NjA5Mzc1LCJ5Ijo2ODR9XQ==" data-look="neo" marker-end="url(#mermaid-1791781954952_flowchart-v2-pointEnd-margin)"></path><path d="M422.74609375,756L422.74609375,792" id="mermaid-1791781954952-L_D_D1_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style="stroke-dasharray: 0 0 32 4; stroke-dashoffset: 0;;" data-edge="true" data-et="edge" data-id="L_D_D1_0" data-points="W3sieCI6NDIyLjc0NjA5Mzc1LCJ5Ijo3NTZ9LHsieCI6NDIyLjc0NjA5Mzc1LCJ5Ijo3OTZ9XQ==" data-look="neo" marker-end="url(#mermaid-1791781954952_flowchart-v2-pointEnd-margin)"></path><path d="M422.74609375,868L422.74609375,904" id="mermaid-1791781954952-L_D1_D2_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style="stroke-dasharray: 0 0 32 4; stroke-dashoffset: 0;;" data-edge="true" data-et="edge" data-id="L_D1_D2_0" data-points="W3sieCI6NDIyLjc0NjA5Mzc1LCJ5Ijo4Njh9LHsieCI6NDIyLjc0NjA5Mzc1LCJ5Ijo5MDh9XQ==" data-look="neo" marker-end="url(#mermaid-1791781954952_flowchart-v2-pointEnd-margin)"></path><path d="M422.74609375,980L422.74609375,1016" id="mermaid-1791781954952-L_D2_E_0" class="edge-thickness-normal edge-pattern-solid edge-thickness-normal edge-pattern-solid flowchart-link" style="stroke-dasharray: 0 0 32 4; stroke-dashoffset: 0;;" data-edge="true" data-et="edge" data-id="L_D2_E_0" data-points="W3sieCI6NDIyLjc0NjA5Mzc1LCJ5Ijo5ODB9LHsieCI6NDIyLjc0NjA5Mzc1LCJ5IjoxMDIwfV0=" data-look="neo" marker-end="url(#mermaid-1791781954952_flowchart-v2-pointEnd-margin)"></path></g><g class="edgeLabels"></g><g class="nodes"><g class="node default" id="mermaid-1791781954952-flowchart-A-0" data-look="neo" transform="translate(422.74609375, 60)"><rect class="basic label-container" style="fill:#4a90d9 !important" x="-76" y="-48" width="152" height="96"></rect><g class="label" style="color:#fff !important" transform="translate(-60, -36)"><rect></rect><foreignObject width="120" height="72"><div style="color: rgb(255, 255, 255) !important; display: table; white-space: break-spaces; line-height: 1.5; max-width: 120px; text-align: center; width: 120px;" xmlns="http://www.w3.org/1999/xhtml"><span style="color:#fff !important" class="nodeLabel"><p>Create exchange directory</p></span></div></foreignObject></g></g><g class="node default" id="mermaid-1791781954952-flowchart-B-1" data-look="neo" transform="translate(422.74609375, 196)"><rect class="basic label-container" style="fill:#f5a623 !important" x="-76" y="-48" width="152" height="96"></rect><g class="label" style="color:#fff !important" transform="translate(-60, -36)"><rect></rect><foreignObject width="120" height="72"><div style="color: rgb(255, 255, 255) !important; display: table; white-space: break-spaces; line-height: 1.5; max-width: 120px; text-align: center; width: 120px;" xmlns="http://www.w3.org/1999/xhtml"><span style="color:#fff !important" class="nodeLabel"><p>Implement required methods</p></span></div></foreignObject></g></g><g class="node default" id="mermaid-1791781954952-flowchart-B1-3" data-look="neo" transform="translate(88.1328125, 352)"><rect class="basic label-container" style="" x="-76.1328125" y="-48" width="152.265625" height="96"></rect><g class="label" style="" transform="translate(-60.1328125, -36)"><rect></rect><foreignObject width="120.265625" height="72"><div xmlns="http://www.w3.org/1999/xhtml" style="display: table; white-space: break-spaces; line-height: 1.5; max-width: 120px; text-align: center; width: 120px;"><span class="nodeLabel"><p>REST API wrapper<br>exchange_api.py</p></span></div></foreignObject></g></g><g class="node default" id="mermaid-1791781954952-flowchart-B2-5" data-look="neo" transform="translate(302.2421875, 352)"><rect class="basic label-container" style="" x="-97.9765625" y="-36" width="195.953125" height="72"></rect><g class="label" style="" transform="translate(-81.9765625, -24)"><rect></rect><foreignObject width="163.953125" height="48"><div xmlns="http://www.w3.org/1999/xhtml" style="display: table; white-space: break-spaces; line-height: 1.5; max-width: 120px; text-align: center; width: 120px;"><span class="nodeLabel"><p>Exchange Interface<br>exchange_interface.py</p></span></div></foreignObject></g></g><g class="node default" id="mermaid-1791781954952-flowchart-B3-7" data-look="neo" transform="translate(543.25, 352)"><rect class="basic label-container" style="" x="-103.03125" y="-36" width="206.0625" height="72"></rect><g class="label" style="" transform="translate(-87.03125, -24)"><rect></rect><foreignObject width="174.0625" height="48"><div xmlns="http://www.w3.org/1999/xhtml" style="display: table; white-space: break-spaces; line-height: 1.5; max-width: 120px; text-align: center; width: 120px;"><span class="nodeLabel"><p>WebSocket handler<br>exchange_websocket.py</p></span></div></foreignObject></g></g><g class="node default" id="mermaid-1791781954952-flowchart-B4-9" data-look="neo" transform="translate(762.28125, 352)"><rect class="basic label-container" style="" x="-76" y="-36" width="152" height="72"></rect><g class="label" style="" transform="translate(-60, -24)"><rect></rect><foreignObject width="120" height="48"><div xmlns="http://www.w3.org/1999/xhtml" style="display: table; white-space: nowrap; line-height: 1.5; max-width: 120px; text-align: center; width: 120px;"><span class="nodeLabel"><p>Exchange class<br>exchange.py</p></span></div></foreignObject></g></g><g class="node default" id="mermaid-1791781954952-flowchart-C-14" data-look="neo" transform="translate(422.74609375, 496)"><rect class="basic label-container" style="fill:#50c878 !important" x="-76" y="-36" width="152" height="72"></rect><g class="label" style="color:#fff !important" transform="translate(-60, -24)"><rect></rect><foreignObject width="120" height="48"><div style="color: rgb(255, 255, 255) !important; display: table; white-space: break-spaces; line-height: 1.5; max-width: 120px; text-align: center; width: 120px;" xmlns="http://www.w3.org/1999/xhtml"><span style="color:#fff !important" class="nodeLabel"><p>Register exchange</p></span></div></foreignObject></g></g><g class="node default" id="mermaid-1791781954952-flowchart-C1-16" data-look="neo" transform="translate(422.74609375, 608)"><rect class="basic label-container" style="" x="-76" y="-36" width="152" height="72"></rect><g class="label" style="" transform="translate(-60, -24)"><rect></rect><foreignObject width="120" height="48"><div xmlns="http://www.w3.org/1999/xhtml" style="display: table; white-space: break-spaces; line-height: 1.5; max-width: 120px; text-align: center; width: 120px;"><span class="nodeLabel"><p>Add imports to __init__.py</p></span></div></foreignObject></g></g><g class="node default" id="mermaid-1791781954952-flowchart-D-18" data-look="neo" transform="translate(422.74609375, 720)"><rect class="basic label-container" style="fill:#9b59b6 !important" x="-76" y="-36" width="152" height="72"></rect><g class="label" style="color:#fff !important" transform="translate(-60, -24)"><rect></rect><foreignObject width="120" height="48"><div style="color: rgb(255, 255, 255) !important; display: table; white-space: break-spaces; line-height: 1.5; max-width: 120px; text-align: center; width: 120px;" xmlns="http://www.w3.org/1999/xhtml"><span style="color:#fff !important" class="nodeLabel"><p>Test with Paper Trade</p></span></div></foreignObject></g></g><g class="node default" id="mermaid-1791781954952-flowchart-D1-20" data-look="neo" transform="translate(422.74609375, 832)"><rect class="basic label-container" style="" x="-78.46875" y="-36" width="156.9375" height="72"></rect><g class="label" style="" transform="translate(-62.46875, -24)"><rect></rect><foreignObject width="124.9375" height="48"><div xmlns="http://www.w3.org/1999/xhtml" style="display: table; white-space: break-spaces; line-height: 1.5; max-width: 120px; text-align: center; width: 120px;"><span class="nodeLabel"><p>Unit tests in tests/exchanges/</p></span></div></foreignObject></g></g><g class="node default" id="mermaid-1791781954952-flowchart-D2-22" data-look="neo" transform="translate(422.74609375, 944)"><rect class="basic label-container" style="" x="-76" y="-36" width="152" height="72"></rect><g class="label" style="" transform="translate(-60, -24)"><rect></rect><foreignObject width="120" height="48"><div xmlns="http://www.w3.org/1999/xhtml" style="display: table; white-space: break-spaces; line-height: 1.5; max-width: 120px; text-align: center; width: 120px;"><span class="nodeLabel"><p>Integration test with backtest</p></span></div></foreignObject></g></g><g class="node default" id="mermaid-1791781954952-flowchart-E-24" data-look="neo" transform="translate(422.74609375, 1044)"><rect class="basic label-container" style="fill:#d94a4a !important" x="-76" y="-24" width="152" height="48"></rect><g class="label" style="color:#fff !important" transform="translate(-60, -12)"><rect></rect><foreignObject width="120" height="24"><div style="color: rgb(255, 255, 255) !important; display: table; white-space: nowrap; line-height: 1.5; max-width: 120px; text-align: center; width: 120px;" xmlns="http://www.w3.org/1999/xhtml"><span style="color:#fff !important" class="nodeLabel"><p>Deploy live</p></span></div></foreignObject></g></g></g></g></g><defs><filter id="mermaid-1791781954952-drop-shadow" height="130%" width="130%"><feDropShadow dx="4" dy="4" stdDeviation="0" flood-opacity="0.06" flood-color="#000000"></feDropShadow></filter></defs><defs><filter id="mermaid-1791781954952-drop-shadow-small" height="150%" width="150%"><feDropShadow dx="2" dy="2" stdDeviation="0" flood-opacity="0.06" flood-color="#000000"></feDropShadow></filter></defs></svg></div><details><summary>Diagram source</summary><pre><code>flowchart TD
     A[Create exchange directory] --&gt; B[Implement required methods]
     B --&gt; B1[REST API wrapper&lt;br/&gt;exchange_api.py]
     B --&gt; B2[Exchange Interface&lt;br/&gt;exchange_interface.py]
@@ -165,25 +152,7 @@ screener = blankly.Screener(exchange, evaluator, symbols=['BTC-USD', 'ETH-USD'],
     style B fill:#f5a623,color:#fff
     style C fill:#50c878,color:#fff
     style D fill:#9b59b6,color:#fff
-    style E fill:#d94a4a,color:#fff</pre><details><summary>Diagram source</summary><pre><code>flowchart TD
-    A[Create exchange directory] --&gt; B[Implement required methods]
-    B --&gt; B1[REST API wrapper&lt;br/&gt;exchange_api.py]
-    B --&gt; B2[Exchange Interface&lt;br/&gt;exchange_interface.py]
-    B --&gt; B3[WebSocket handler&lt;br/&gt;exchange_websocket.py]
-    B --&gt; B4[Exchange class&lt;br/&gt;exchange.py]
-    B1 &amp; B2 &amp; B3 &amp; B4 --&gt; C[Register exchange]
-    C --&gt; C1[Add imports to __init__.py]
-    C1 --&gt; D[Test with Paper Trade]
-    D --&gt; D1[Unit tests in tests/exchanges/]
-    D1 --&gt; D2[Integration test with backtest]
-    D2 --&gt; E[Deploy live]
-
-    style A fill:#4a90d9,color:#fff
-    style B fill:#f5a623,color:#fff
-    style C fill:#50c878,color:#fff
-    style D fill:#9b59b6,color:#fff
-    style E fill:#d94a4a,color:#fff</code></pre></details></div>
-
+    style E fill:#d94a4a,color:#fff</code></pre></details>
 <ol>
 <li>Create <code>src/blankly/exchanges/interfaces/{exchange_name}/</code></li>
 <li>Implement:
@@ -194,7 +163,7 @@ screener = blankly.Screener(exchange, evaluator, symbols=['BTC-USD', 'ETH-USD'],
 <li>Add imports to <code>src/blankly/__init__.py</code></li>
 <li>Create tests in <code>tests/exchanges/interfaces/{exchange_name}/</code></li>
 </ol>
-<h3 id="interface-methods-to-implement">Interface Methods to Implement<a class="headerlink" href="#interface-methods-to-implement" title="Permanent link">&para;</a></h3>
+<h3 id="interface-methods-to-implement">Interface Methods to Implement</h3>
 <table>
 <thead>
 <tr>
@@ -241,7 +210,7 @@ screener = blankly.Screener(exchange, evaluator, symbols=['BTC-USD', 'ETH-USD'],
 </tr>
 </tbody>
 </table>
-<h2 id="built-in-indicators">Built-in Indicators<a class="headerlink" href="#built-in-indicators" title="Permanent link">&para;</a></h2>
+<h2 id="built-in-indicators">Built-in Indicators</h2>
 <pre><code class="language-python">import blankly
 
 blankly.indicators.sma(prices, period=20)    # Simple Moving Average
@@ -251,21 +220,21 @@ blankly.indicators.macd(prices)              # MACD
 blankly.indicators.stochastic(high, low, close)  # Stochastic Oscillator
 blankly.indicators.adx(high, low, close)     # Average Directional Index
 </code></pre>
-<h2 id="cli-usage">CLI Usage<a class="headerlink" href="#cli-usage" title="Permanent link">&para;</a></h2>
+<h2 id="cli-usage">CLI Usage</h2>
 <pre><code class="language-bash">blankly init      # Initialize new project
 blankly login     # Login to platform
 blankly deploy    # Deploy model
 blankly keys add  # Add API keys interactively
 </code></pre>
-<h2 id="important-notes">Important Notes<a class="headerlink" href="#important-notes" title="Permanent link">&para;</a></h2>
+<h2 id="important-notes">Important Notes</h2>
 <ul>
 <li>Always use <code>state.time</code> instead of <code>time.time()</code> in strategies</li>
 <li>Always use <code>model.sleep()</code> instead of <code>time.sleep()</code> in Model subclasses</li>
 <li>Use <code>blankly.trunc(value, decimals)</code> for exchange precision rounding</li>
 <li>Resolution strings: <code>'1m'</code>, <code>'5m'</code>, <code>'15m'</code>, <code>'1h'</code>, <code>'1d'</code></li>
 </ul>
-<h2 id="configuration-reference">Configuration Reference<a class="headerlink" href="#configuration-reference" title="Permanent link">&para;</a></h2>
-<h3 id="keysjson">keys.json<a class="headerlink" href="#keysjson" title="Permanent link">&para;</a></h3>
+<h2 id="configuration-reference">Configuration Reference</h2>
+<h3 id="keysjson">keys.json</h3>
 <table>
 <thead>
 <tr>
@@ -302,7 +271,7 @@ blankly keys add  # Add API keys interactively
 </tr>
 </tbody>
 </table>
-<h3 id="settingsjson">settings.json<a class="headerlink" href="#settingsjson" title="Permanent link">&para;</a></h3>
+<h3 id="settingsjson">settings.json</h3>
 <table>
 <thead>
 <tr>
@@ -363,7 +332,7 @@ blankly keys add  # Add API keys interactively
 </tr>
 </tbody>
 </table>
-<h3 id="backtestjson">backtest.json<a class="headerlink" href="#backtestjson" title="Permanent link">&para;</a></h3>
+<h3 id="backtestjson">backtest.json</h3>
 <table>
 <thead>
 <tr>
@@ -430,7 +399,7 @@ blankly keys add  # Add API keys interactively
 </tr>
 </tbody>
 </table>
-<h3 id="strategybacktest-parameters">Strategy.backtest() Parameters<a class="headerlink" href="#strategybacktest-parameters" title="Permanent link">&para;</a></h3>
+<h3 id="strategybacktest-parameters">Strategy.backtest() Parameters</h3>
 <table>
 <thead>
 <tr>
@@ -479,24 +448,24 @@ blankly keys add  # Add API keys interactively
 </tr>
 </tbody>
 </table>
-<h2 id="troubleshooting">Troubleshooting<a class="headerlink" href="#troubleshooting" title="Permanent link">&para;</a></h2>
-<h3 id="modulenotfounderror-no-module-named-newnewtulipy"><code>ModuleNotFoundError: No module named 'newnewtulipy'</code><a class="headerlink" href="#modulenotfounderror-no-module-named-newnewtulipy" title="Permanent link">&para;</a></h3>
+<h2 id="troubleshooting">Troubleshooting</h2>
+<h3 id="modulenotfounderror-no-module-named-newnewtulipy"><code>ModuleNotFoundError: No module named 'newnewtulipy'</code></h3>
 <p>This C extension requires build tools. On Linux: <code>sudo apt install build-essential</code>. On macOS: <code>xcode-select --install</code>. On Windows: install Visual Studio Build Tools.</p>
-<h3 id="keyerror-when-accessing-stateinterfaceaccountasset"><code>KeyError</code> when accessing <code>state.interface.account[asset]</code><a class="headerlink" href="#keyerror-when-accessing-stateinterfaceaccountasset" title="Permanent link">&para;</a></h3>
+<h3 id="keyerror-when-accessing-stateinterfaceaccountasset"><code>KeyError</code> when accessing <code>state.interface.account[asset]</code></h3>
 <p>The asset key must match the exchange's symbol format. For Coinbase Pro use <code>'BTC'</code> (not <code>'BTC-USD'</code>). Check <code>state.base_asset</code> and <code>state.quote_asset</code> for the correct identifiers.</p>
-<h3 id="backtest-returns-empty-or-flat-results">Backtest returns empty or flat results<a class="headerlink" href="#backtest-returns-empty-or-flat-results" title="Permanent link">&para;</a></h3>
+<h3 id="backtest-returns-empty-or-flat-results">Backtest returns empty or flat results</h3>
 <p>Ensure <code>initial_values</code> matches the quote currency. For crypto, use <code>{'USD': 10000}</code> or <code>{'USDT': 10000}</code> depending on the exchange. Also verify the <code>resolution</code> parameter matches available data granularity.</p>
-<h3 id="attributeerror-nonetype-object-has-no-attribute-get_price"><code>AttributeError: 'NoneType' object has no attribute 'get_price'</code><a class="headerlink" href="#attributeerror-nonetype-object-has-no-attribute-get_price" title="Permanent link">&para;</a></h3>
+<h3 id="attributeerror-nonetype-object-has-no-attribute-get_price"><code>AttributeError: 'NoneType' object has no attribute 'get_price'</code></h3>
 <p>The exchange interface was not properly initialized. When using <code>KeylessExchange</code>, ensure you pass a <code>PriceReader</code> with data covering the full backtest period. For live exchanges, verify <code>keys.json</code> has valid credentials.</p>
-<h3 id="websocket-disconnections-during-live-trading">WebSocket disconnections during live trading<a class="headerlink" href="#websocket-disconnections-during-live-trading" title="Permanent link">&para;</a></h3>
+<h3 id="websocket-disconnections-during-live-trading">WebSocket disconnections during live trading</h3>
 <p>Blankly auto-reconnects WebSocket feeds, but network interruptions can cause missed ticks. Implement defensive checks in <code>price_event</code> callbacks: verify <code>price &gt; 0</code> and handle <code>None</code> values in <code>state.variables</code>.</p>
-<h3 id="decimalinvalidoperation-or-precision-errors"><code>decimal.InvalidOperation</code> or precision errors<a class="headerlink" href="#decimalinvalidoperation-or-precision-errors" title="Permanent link">&para;</a></h3>
+<h3 id="decimalinvalidoperation-or-precision-errors"><code>decimal.InvalidOperation</code> or precision errors</h3>
 <p>Exchanges enforce specific lot sizes and tick increments. Use <code>blankly.trunc(value, decimals)</code> to round order sizes. Check <code>state.interface.get_products()</code> for each symbol's precision rules.</p>
-<h3 id="timetime-returns-wrong-value-in-backtests"><code>time.time()</code> returns wrong value in backtests<a class="headerlink" href="#timetime-returns-wrong-value-in-backtests" title="Permanent link">&para;</a></h3>
+<h3 id="timetime-returns-wrong-value-in-backtests"><code>time.time()</code> returns wrong value in backtests</h3>
 <p>Never use <code>time.time()</code> in strategy code. Use <code>state.time</code> inside strategy callbacks, or <code>model.time</code> inside Model subclasses. In backtesting, <code>time.time()</code> returns wall-clock time, not simulated time.</p>
-<h3 id="paper-trade-results-differ-from-live-execution">Paper trade results differ from live execution<a class="headerlink" href="#paper-trade-results-differ-from-live-execution" title="Permanent link">&para;</a></h3>
+<h3 id="paper-trade-results-differ-from-live-execution">Paper trade results differ from live execution</h3>
 <p>Paper trading uses mid-price fills, while live exchanges fill at bid/ask. Fees in paper trading use your actual fee tier from the exchange. Slippage and partial fills are not simulated.</p>
-<h2 id="security-considerations">Security Considerations<a class="headerlink" href="#security-considerations" title="Permanent link">&para;</a></h2>
+<h2 id="security-considerations">Security Considerations</h2>
 <ul>
 <li><strong>API key storage</strong>: Store exchange credentials in <code>keys.json</code>, which should be added to <code>.gitignore</code>. Never commit API keys to version control. Use environment variables or a secrets manager for production deployments.</li>
 <li><strong>Key permissions</strong>: Configure exchange API keys with the minimum required permissions. For backtesting-only workflows, use read-only keys. For live trading, enable trading but disable withdrawal permissions.</li>
@@ -506,15 +475,20 @@ blankly keys add  # Add API keys interactively
 <li><strong>Deployment tokens</strong>: The <code>blankly login</code> / <code>blankly deploy</code> commands authenticate with the Blankly platform. Treat deployment tokens as secrets and rotate them periodically.</li>
 <li><strong>Rate limiting</strong>: Exchange API calls are not rate-limited by default. Excessive calls can trigger IP bans. Use appropriate <code>resolution</code> intervals (avoid sub-second for REST-based price events).</li>
 </ul>
-<hr />
-<h2 id="see-also">See Also<a class="headerlink" href="#see-also" title="Permanent link">&para;</a></h2>
+<hr>
+<h2 id="see-also">See Also</h2>
 <ul>
 <li><a href="README.md">README</a> — Project overview and quick start</li>
 <li><a href="architecture.md">Architecture</a> — System design and components</li>
 <li><a href="workflow.md">Workflow</a> — Event flows and processing pipelines</li>
 <li><a href="state-management.md">State Management</a> — State lifecycle and data models</li>
-</ul></main>
-<script type="module">
-import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@12.1.0/dist/mermaid.esm.min.mjs';
-mermaid.initialize({startOnLoad:true,securityLevel:'strict',theme:'default',flowchart:{useMaxWidth:true},sequence:{useMaxWidth:true}});
-</script></body></html>
+</ul>
+<h2 id="original-native-indicator-backend-on-python-315">Original native indicator backend on Python 3.15</h2>
+<p>The <code>indicators</code> extra uses the latest licensed <a href="../../OctoBot/vendor/octobot-tulipy/PROVENANCE.md">OctoBot-Tulipy 0.4.11b13 source</a> from the adjacent OctoBot checkout. The old backend marker required Python below 3.13 while Blankly required Python at least 3.13, so no supported interpreter could install it. The source build exposes the same <code>tulipy</code> API and keeps its original indicator formulas; strict native multiply/add compiler settings preserve historical arithmetic.</p>
+<p>The current upstream SDK requires NumPy exactly 2.4.2. Blankly’s maintenance-only floor is therefore 2.4.2 rather than the incompatible 2.5.4 floor; the resolved environment selects the highest version permitted by the actual SDK. The original 12 indicator cases retain exact array equality against the unchanged <code>tests/config/test_data.p</code>, and all five original metric cases retain their original expected values. In an isolated Python 3.15 control, the former 12 indicator failures become 12 passes and all 17 indicator/metric cases pass. No test case, fixture value or indicator expression changed.</p>
+<pre><code class="language-sh">uv sync --all-extras --all-groups --frozen --python 3.15.0
+uv run --frozen python -m pytest tests/indicators tests/metrics
+uv run --frozen python -m pytest --continue-on-collection-errors
+</code></pre>
+<p>The complete original discovery still reports the missing private <code>tests/config/keys.json</code>. Continuing after that collection error exercises the other original cases: indicator and metric cases pass; private exchange, strategy and websocket cases fail during missing-key setup. No credentials or fake exchange messages are supplied.</p></main>
+<div class="mermaidTooltip" style="opacity: 0; position: absolute; text-align: center; max-width: 200px; padding: 2px; font-size: 12px; background: rgb(255, 255, 222); border: 1px solid rgb(51, 51, 51); border-radius: 2px; pointer-events: none; z-index: 100;"></div></body></html>
