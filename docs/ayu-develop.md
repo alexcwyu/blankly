@@ -216,3 +216,5 @@ flowchart TD
 ```
 
 See [development commands](development.md) and [validation evidence](validation.md) for interpreter selection, dependency exceptions, full-suite results and remaining blockers. No additional test cases were introduced by this maintenance.
+
+The original native indicator backend now builds on Python 3.15 through [the documented licensed adjacent source](development.md#original-native-indicator-backend-on-python-315). All 12 original exact-array indicator cases and five original metric cases pass with unchanged numerical fixtures. Private exchange validation still needs the repository’s original credential file.

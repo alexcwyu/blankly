@@ -314,3 +314,17 @@ Paper trading uses mid-price fills, while live exchanges fill at bid/ask. Fees i
 - [Architecture](architecture.md) — System design and components
 - [Workflow](workflow.md) — Event flows and processing pipelines
 - [State Management](state-management.md) — State lifecycle and data models
+
+## Original native indicator backend on Python 3.15
+
+The `indicators` extra uses the latest licensed [OctoBot-Tulipy 0.4.11b13 source](../../OctoBot/vendor/octobot-tulipy/PROVENANCE.md) from the adjacent OctoBot checkout. The old backend marker required Python below 3.13 while Blankly required Python at least 3.13, so no supported interpreter could install it. The source build exposes the same `tulipy` API and keeps its original indicator formulas; strict native multiply/add compiler settings preserve historical arithmetic.
+
+The current upstream SDK requires NumPy exactly 2.4.2. Blankly’s maintenance-only floor is therefore 2.4.2 rather than the incompatible 2.5.4 floor; the resolved environment selects the highest version permitted by the actual SDK. The original 12 indicator cases retain exact array equality against the unchanged `tests/config/test_data.p`, and all five original metric cases retain their original expected values. In an isolated Python 3.15 control, the former 12 indicator failures become 12 passes and all 17 indicator/metric cases pass. No test case, fixture value or indicator expression changed.
+
+```sh
+uv sync --all-extras --all-groups --frozen --python 3.15.0
+uv run --frozen python -m pytest tests/indicators tests/metrics
+uv run --frozen python -m pytest --continue-on-collection-errors
+```
+
+The complete original discovery still reports the missing private `tests/config/keys.json`. Continuing after that collection error exercises the other original cases: indicator and metric cases pass; private exchange, strategy and websocket cases fail during missing-key setup. No credentials or fake exchange messages are supplied.

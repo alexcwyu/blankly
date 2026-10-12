@@ -35,7 +35,6 @@ def _check_tulipy():
     if not TULIPY_AVAILABLE:
         raise ImportError(
             "tulipy is not installed. Install it with: pip install 'blankly[indicators]' "
-            "Note: tulipy is not compatible with Python 3.13+"
         )
 
 

@@ -27,7 +27,7 @@ dependencies = [
     "yaspin>=3.5.1",
     "bokeh>=3.10.0",
     "dateparser>=1.4.3",
-    "numpy>=2.5.4",
+    "numpy>=2.4.2",
     "pandas>=3.0.6",
     "requests>=2.34.2",
     "websocket-client>=1.9.2",
@@ -42,7 +42,7 @@ binance = [
     "python-binance>=1.0.37",
 ]
 indicators = [
-    "newnewtulipy>=0.4.6.5; python_version < '3.13'",
+    "octobot-tulipy>=0.4.11b13",
 ]
 all = [
     "python-binance>=1.0.37",
@@ -102,3 +102,6 @@ dev = ["pytest>=9.1.1", "pytest-mock>=3.16.0"]
 
 [tool.uv]
 default-groups = ["dev"]
+
+[tool.uv.sources]
+octobot-tulipy = { path = "../OctoBot/vendor/octobot-tulipy" }
